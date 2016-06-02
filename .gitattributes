@@ -1,0 +1,22 @@
+* text eol=lf
+*.java eol=lf
+*.js eol=lf
+*.css eol=lf
+
+*.bat eol=crlf
+
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.jar binary
+*.zip binary
+*.odt binary
+*.ttf binary
+*.pdf binary
+*.otf binary
+*.utf binary
+*.eot binary
+*.woff binary
+*.xls binary
+*.xlsx binary

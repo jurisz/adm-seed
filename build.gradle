@@ -1,0 +1,92 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+apply plugin: 'base'
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.12'
+}
+
+buildscript {
+	repositories {
+		mavenLocal()
+		jcenter()
+	}
+
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:1.3.5.RELEASE"
+		classpath 'io.spring.gradle:dependency-management-plugin:0.5.7.RELEASE'
+		classpath "be.filipblondeel.gradle:gradle-gulp-plugin:0.1"
+	}
+}
+
+allprojects {
+
+	group = "org.juz.seed"
+
+	apply from: "${rootProject.projectDir}/gradle/libraries.gradle"
+
+	apply plugin: 'java'
+	apply plugin: 'groovy'
+	apply plugin: 'maven'
+	apply plugin: 'checkstyle'
+	apply plugin: 'idea'
+	apply plugin: 'io.spring.dependency-management'
+
+	repositories {
+		mavenLocal()
+		jcenter()
+		maven {
+			url "https://github.com/jurisz/mvn-repo/raw/master/releases/"
+		}
+	}
+
+	dependencyManagement {
+		imports {
+			mavenBom "io.spring.platform:platform-bom:${spring_platform_version}"
+		}
+	}
+
+	compileJava {
+		sourceCompatibility = '1.8'
+		targetCompatibility = '1.8'
+		options.encoding = 'UTF-8'
+		options.compilerArgs = ['-XDignore.symbol.file', '-Xlint:unchecked']
+	}
+
+	compileTestJava {
+		sourceCompatibility = '1.8'
+		targetCompatibility = '1.8'
+		options.encoding = 'UTF-8'
+	}
+
+	checkstyle {
+		configFile = rootProject.file('checkstyle.xml')
+		toolVersion = "6.0"
+	}
+
+	jar.baseName = 'adm-seed-' + jar.baseName
+
+}
+
+def platformLibVersion(def versionProperty) {
+	':' + dependencyManagement.importedProperties.get(versionProperty)
+}
+
+class NpmInstall extends Exec {
+	NpmInstall() {
+		if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+			commandLine('npm.cmd', 'install')
+		} else {
+			commandLine('npm', 'install')
+		}
+	}
+}
+
+class NpmInstallPlugin implements Plugin<Project> {
+	void apply(Project project) {
+		project.task('npm_install', type: NpmInstall)
+	}
+}
+
+ext.NpmInstallPlugin = NpmInstallPlugin
+

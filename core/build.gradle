@@ -1,0 +1,59 @@
+project(":core") {
+	description = 'Core modules'
+
+	test.dependsOn { subprojects.test }
+}
+
+project(":core:api") {
+	dependencies {
+		compile lib.juz_commons_api
+	}
+}
+
+project(":core:config") {
+	dependencies {
+		compile project(":core:api")
+		compile lib.juz_commons_infrastructure
+
+		compile lib.hikaricp
+		compile lib.postgresql
+	}
+}
+
+project(":core:base") {
+	dependencies {
+		compile project(":core:config")
+	}
+}
+
+project(":core:domain") {
+	dependencies {
+		compile project(":core:base")
+		compile lib.gson
+
+		testCompile lib.juz_test_base
+	}
+}
+
+project(":core:webapp") {
+	apply plugin: 'spring-boot'
+
+	dependencies {
+		compile project(":core:domain")
+
+		compile lib.spring_boot_web
+		compile lib.spring_boot_web_jetty
+		compile lib.spring_boot_web_actuator
+
+		compile lib.spring_security_config
+		compile lib.spring_security_web
+
+		compile lib.aspectjweaver
+
+		testCompile lib.juz_test_base
+	}
+
+	springBoot {
+		mainClass = "org.juz.seed.webapp.BootApplication"
+	}
+}

@@ -1,0 +1,32 @@
+*.pid
+
+.log
+.checkstyle
+*.*~
+
+# gradle
+.gradle
+build/
+dist/
+
+# idea
+*.iml
+.idea/
+classes/
+.gradletasknamecache
+
+# eclipse
+.classpath
+.project
+.settings
+bin/
+
+#netbeans
+.nb-gradle
+
+# yeoman (grunt, bower)
+typings/
+node_modules/
+bower_components/
+coverage/
+.tmp/

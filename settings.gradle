@@ -1,0 +1,23 @@
+rootProject.name = 'adm-seed'
+
+def scan(parent, file) {
+	if (file.directory && new File(file, 'build.gradle').exists()) {
+		file.listFiles()
+				.findAll { it.directory }
+				.each { child ->
+			def projectName = "${parent}:${child.name}"
+			if (new File(child, 'src').exists() || new File(child, 'gulpfile.js').exists()) {
+				include projectName
+			} else if (child.name.startsWith("core") || child.name == ("tests")) {
+				scan projectName, child
+			}
+		}
+	}
+}
+
+def scanModuleDir(dir) {
+	scan "${dir}", new File(rootProject.projectDir, dir)
+}
+
+scan '', rootProject.projectDir
+

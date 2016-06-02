@@ -1,0 +1,63 @@
+ext {
+
+	spring_platform_version = '2.0.5.RELEASE'
+	camel_version = '2.17.1'
+	xdocreport_version = '1.0.5'
+	juz_commons_version = '1.0.1'
+
+	ext.lib = [
+
+			juz_commons_api           : "org.juz.common:juz-commons-api:${juz_commons_version}",
+			juz_commons_base          : "org.juz.common:juz-commons-base:${juz_commons_version}",
+			juz_commons_infrastructure: "org.juz.common:juz-commons-infrastructure:${juz_commons_version}",
+			juz_test_base             : "org.juz.common:juz-test-base:${juz_commons_version}",
+
+			spring_boot_web           : "org.springframework.boot:spring-boot-starter-web",
+			spring_boot_web_jetty     : "org.springframework.boot:spring-boot-starter-jetty",
+			spring_boot_web_actuator  : "org.springframework.boot:spring-boot-starter-actuator",
+
+			spring_security_core      : "org.springframework.security:spring-security-core",
+			spring_security_web       : "org.springframework.security:spring-security-web",
+			spring_security_config    : "org.springframework.security:spring-security-config",
+			spring_test               : "org.springframework:spring-test",
+			gson                      : "com.google.code.gson:gson",
+
+			postgresql                : "org.postgresql:postgresql:9.4-1205-jdbc42",
+			hikaricp                  : "com.zaxxer:HikariCP",
+
+			//  aspectj
+			aspectjweaver             : "org.aspectj:aspectjweaver",
+
+			//test
+			junit                     : "junit:junit",
+			mockito                   : "org.mockito:mockito-core",
+			hamcrest_all              : "org.hamcrest:hamcrest-all",
+			spock_core                : "org.spockframework:spock-core",
+			spock_spring              : "org.spockframework:spock-spring",
+			groovy                    : "org.codehaus.groovy:groovy-all",
+
+			//other
+			freemarker                : "org.freemarker:freemarker",
+			quartz                    : "org.quartz-scheduler:quartz",
+
+			//camel
+			camel_core                : "org.apache.camel:camel-core:${camel_version}",
+			camel_jms                 : "org.apache.camel:camel-jms:${camel_version}",
+			camel_http                : "org.apache.camel:camel-http:${camel_version}",
+			camel_spring              : "org.apache.camel:camel-spring:${camel_version}",
+			camel_test                : "org.apache.camel:camel-test:${camel_version}",
+			camel_quartz2             : "org.apache.camel:camel-quartz2:${camel_version}",
+			camel_spring_config       : "org.apache.camel:camel-spring-javaconfig:${camel_version}",
+
+			//activemq
+			activemq_client           : "org.apache.activemq:activemq-client",
+			activemq_broker           : "org.apache.activemq:activemq-broker",
+			activemq_camel            : "org.apache.activemq:activemq-camel",
+
+			xdocreport_odt            : "fr.opensagres.xdocreport:fr.opensagres.xdocreport.document.odt:${xdocreport_version}",
+			xdocreport_odfdom         : "fr.opensagres.xdocreport:fr.opensagres.xdocreport.converter.odt.odfdom:${xdocreport_version}",
+			xdocreport_converter      : "fr.opensagres.xdocreport:fr.opensagres.xdocreport.converter:${xdocreport_version}",
+			xdocreport_freemarker     : "fr.opensagres.xdocreport:fr.opensagres.xdocreport.template.freemarker:${xdocreport_version}",
+	]
+}
+
