@@ -3,7 +3,6 @@
  */
 
 // Angular 2
-import {HashLocationStrategy, LocationStrategy} from "@angular/common";
 import {HTTP_PROVIDERS} from "@angular/http";
 import {provideRouter} from "@angular/router";
 import {disableDeprecatedForms, provideForms} from "@angular/forms";
@@ -33,7 +32,6 @@ export const APPLICATION_PROVIDERS = [
 
     ...HTTP_PROVIDERS,
 
-    {provide: LocationStrategy, useClass: HashLocationStrategy}
 ];
 
 export const PROVIDERS = [
