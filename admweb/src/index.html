@@ -10,20 +10,19 @@
 	<meta name="description" content="<%= webpackConfig.metadata.title %>">
 
 	<% if (webpackConfig.htmlElements.headTags) { %>
-	<!-- Configured Head Tags  -->
 	<%= webpackConfig.htmlElements.headTags %>
 	<% } %>
 
-	<!-- base url -->
 	<base href="<%= webpackConfig.metadata.baseUrl %>">
 
+	<link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css" crossorigin="anonymous">
 
 </head>
 
 <body>
 
 <app>
-	Loading... (TODO // nice loader)
+	<div style="display: table; margin: 0 auto;"><img src="assets/img/spinner.gif"></div>
 </app>
 
 <% if (webpackConfig.metadata.isDevServer) { %>
