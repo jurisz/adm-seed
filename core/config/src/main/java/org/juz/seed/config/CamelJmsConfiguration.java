@@ -3,7 +3,7 @@ package org.juz.seed.config;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.component.jms.JmsConfiguration;
-import org.apache.camel.spring.javaconfig.CamelConfiguration;
+import org.apache.camel.spring.SpringCamelContext;
 import org.juz.common.config.Profiles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,7 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import javax.jms.ConnectionFactory;
 
 @Configuration
-class CamelJmsConfiguration extends CamelConfiguration {
+class CamelJmsConfiguration extends SpringCamelContext {
 
 	@Bean
 	@Autowired

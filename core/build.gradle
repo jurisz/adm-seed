@@ -18,6 +18,17 @@ project(":core:config") {
 		compile lib.hikaricp
 		compile lib.postgresql
 	}
+
+	check {
+		//check commons and here we have same spring parent bom  
+		def dependency = project.dependencies.create(lib.juz_commons_api + "@pom")
+		def configuration = project.configurations.detachedConfiguration(dependency)
+		def pomFile = configuration.resolve().iterator().next()
+		def commonsPom = new XmlSlurper().parse(pomFile)
+		def platformBomDependency = commonsPom.dependencyManagement.dependencies.dependency
+		assert platformBomDependency.artifactId == 'platform-bom'
+		assert platformBomDependency.version == spring_platform_version: "Spring bom versions conflict! Commons platform version: $platformBomDependency.version"
+	}
 }
 
 project(":core:base") {
