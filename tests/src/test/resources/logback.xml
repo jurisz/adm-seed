@@ -1,0 +1,16 @@
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} %-5level %-40logger{36} %-20mdc{info} %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.occ" level="DEBUG"/>
+	<!--	<logger name="org.hibernate" level="DEBUG"/>-->
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT"/>
+	</root>
+
+</configuration>

@@ -1,0 +1,5 @@
+dependencies {
+	compile project(":core:webapp")
+
+	compile lib.juz_test_base
+}

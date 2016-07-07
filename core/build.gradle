@@ -8,16 +8,6 @@ project(":core:api") {
 	dependencies {
 		compile lib.juz_commons_api
 	}
-}
-
-project(":core:config") {
-	dependencies {
-		compile project(":core:api")
-		compile lib.juz_commons_infrastructure
-
-		compile lib.hikaricp
-		compile lib.postgresql
-	}
 
 	check {
 		//check commons and here we have same spring parent bom  
@@ -31,15 +21,26 @@ project(":core:config") {
 	}
 }
 
+
 project(":core:base") {
 	dependencies {
-		compile project(":core:config")
+		compile project(":core:api")
+		compile lib.juz_commons_infrastructure
+	}
+}
+
+project(":core:config") {
+	dependencies {
+		compile project(":core:base")
+
+		compile lib.hikaricp
+		compile lib.postgresql
 	}
 }
 
 project(":core:domain") {
 	dependencies {
-		compile project(":core:base")
+		compile project(":core:config")
 		compile lib.gson
 
 		testCompile lib.juz_test_base
