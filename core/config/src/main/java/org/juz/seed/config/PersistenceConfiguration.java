@@ -28,7 +28,7 @@ import java.util.Properties;
 
 @EnableTransactionManagement
 @Configuration
-@EnableJpaRepositories(basePackages = {"com.neotech.p2p", "com.neotech.p2p.commons.base.persistence.model"})
+@EnableJpaRepositories(basePackages = {"org.juz.seed", "org.juz.common.persistence.model"})
 class PersistenceConfiguration {
 
 	@Autowired
