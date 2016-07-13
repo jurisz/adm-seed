@@ -52,7 +52,7 @@ public class BackofficeLoginController {
 			loginSuccess(authentication);
 			return transformPermissions(authentication);
 		} catch (AuthenticationException failed) {
-			log.error("Authentication error, error: {}: {}", failed.getClass(), failed.getMessage());
+			log.error("Authentication error, error: {}: {}", failed.getClass().getSimpleName(), failed.getMessage());
 			loginFailed();
 			throw new AccessDeniedException("login failed");
 		}
