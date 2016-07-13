@@ -3,6 +3,7 @@ import {RouterConfig} from "@angular/router";
 import {Home} from "./home";
 import {NoContent} from "./no-content";
 import {DataResolver} from "./app.resolver";
+import {Login} from "./component/login";
 
 export const routes:RouterConfig = [
     {path: '', component: Home},
@@ -14,6 +15,7 @@ export const routes:RouterConfig = [
             'yourData': DataResolver
         }
     },
+    {path: 'login', component: Login},
     // async components with children routes must use WebpackAsyncRoute
     {
         path: 'detail', component: 'Detail',
