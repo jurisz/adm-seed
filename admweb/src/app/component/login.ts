@@ -3,14 +3,12 @@ import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {CORE_DIRECTIVES} from "@angular/common";
 import {UserService} from "../service";
 
-const styles = require('./login.css');
 const template = require('./login.html');
 
 @Component({
     selector: 'login',
     directives: [ROUTER_DIRECTIVES, CORE_DIRECTIVES],
     template: template,
-    styles: [styles],
     providers: [UserService]
 })
 export class Login {

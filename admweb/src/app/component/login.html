@@ -6,10 +6,6 @@
 					<h4 class="modal-title">Login</h4>
 				</div>
 				<div class="modal-body">
-					<div class="input-group has-error">
-						<div class="help-block" id="login.failed" *ngIf="loginFailed">Login failed.</div>
-					</div>
-
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="username" name="username" [(ngModel)]="model.username" (keypress)="login($event)" required>
 					</div>
@@ -18,6 +14,9 @@
 						<input type="password" class="form-control" placeholder="password" name="loginPass" [(ngModel)]="model.password" (keypress)="login($event)" required>
 					</div>
 
+					<div class="form-group has-danger">
+						<div *ngIf="loginFailed" class="form-control-feedback">Login failed.</div>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" (click)="login()">Login</button>
