@@ -47,5 +47,4 @@ export const prefetchRouteCallbacks:Array<IdleCallbacks> = [
     // es6-promise-loader returns a function
 ];
 
-
 // Es6PromiseLoader and AsyncRoutes interfaces are defined in custom-typings

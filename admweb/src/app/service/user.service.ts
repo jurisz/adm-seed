@@ -21,12 +21,15 @@ export class UserService {
         return loginObservable;
     }
 
-    private makeLogin(permissions:any, username:String) {
+    private makeLogin(permissions:any, username:String):void {
         this.user = {isLoggedIn: true, username: username, permissions: permissions};
     }
 
-    private resetUser() {
+    private resetUser():void {
         this.user = {isLoggedIn: false, username: null, permissions: null};
     }
 
+    private isLoggedIn():boolean {
+        return this.user.isLoggedIn;
+    }
 }
