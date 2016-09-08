@@ -13,6 +13,8 @@ import {Home} from "./home";
 import {About} from "./about";
 import {NoContent} from "./no-content";
 import {Login} from "./component/login";
+import {AuthGuard} from "./service/auth.gurad";
+import {UserService} from "./service";
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -22,7 +24,9 @@ import {Login} from "./component/login";
 // Application wide providers
 const APP_PROVIDERS = [
 	...APP_RESOLVER_PROVIDERS,
-	AppState
+	AppState,
+	AuthGuard,
+	UserService
 ];
 
 /**

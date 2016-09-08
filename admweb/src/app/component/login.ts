@@ -8,7 +8,6 @@ import {UserService} from "../service";
 	selector: 'login',
 	directives: [ROUTER_DIRECTIVES, CORE_DIRECTIVES],
 	templateUrl: './login.html',
-	providers: [UserService]
 })
 export class Login {
 	private model = {username: null, password: null};
