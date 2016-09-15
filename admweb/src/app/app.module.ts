@@ -36,10 +36,10 @@ const APP_PROVIDERS = [
 	bootstrap: [App],
 	declarations: [
 		App,
-		About,
+		Login,
 		Home,
-		NoContent,
-		Login
+		About,
+		NoContent
 	],
 	imports: [ // import Angular's modules
 		BrowserModule,
