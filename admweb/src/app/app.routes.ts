@@ -10,7 +10,7 @@ export const ROUTES: Routes = [
     {path: 'home', component: Home},
 	{path: 'about', component: About, canActivate: [AuthGuard]},
     {
-        path: 'detail', loadChildren: () => require('es6-promise-loader!./+detail')('default')
+		path: 'detail', loadChildren: () => System.import('./+detail')
     },
     {path: 'login', component: Login},
     {path: '**', component: NoContent},

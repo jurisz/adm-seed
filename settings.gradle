@@ -6,7 +6,7 @@ def scan(parent, file) {
 				.findAll { it.directory }
 				.each { child ->
 			def projectName = "${parent}:${child.name}"
-			if (new File(child, 'src').exists() || new File(child, 'gulpfile.js').exists()) {
+			if (new File(child, 'src').exists() || new File(child, 'package.json').exists()) {
 				include projectName
 			} else if (child.name.startsWith("core") || child.name == ("tests")) {
 				scan projectName, child
