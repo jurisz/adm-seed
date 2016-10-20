@@ -5,6 +5,8 @@
 *.*~
 .tmp/
 
+yarn.lock
+
 # gradle
 .gradle
 build/
