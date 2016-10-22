@@ -1,0 +1,10 @@
+
+ -> login page vs normal pages 
+ -> loading indincator
+ 
+ -> global notifications
+ -> error notifications
+ -> http server returned errors 
+ -> User.heartbeat 
+
+ -> tabs and history 
