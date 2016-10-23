@@ -1,5 +1,6 @@
 
- -> login page vs normal pages 
+ -> login page vs normal pages
+ -> remober login url 
  -> loading indincator
  
  -> global notifications
@@ -7,4 +8,5 @@
  -> http server returned errors 
  -> User.heartbeat 
 
+ -> registry table with all things
  -> tabs and history 
