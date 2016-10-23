@@ -31,6 +31,7 @@ public class BaseWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				"/static/**",
 				"/api/public/**",
 				"/api/admin/login",
+				"/api/admin/loggedin",
 				"/status/ping"
 		);
 	}

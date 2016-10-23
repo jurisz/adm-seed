@@ -162,6 +162,10 @@ module.exports = function (options) {
         '/api/*': {
           target: 'http://localhost:8080',
           secured: false
+		},
+		  '/logout': {
+			  target: 'http://localhost:8080',
+			  secured: false
         }
       }
     },
