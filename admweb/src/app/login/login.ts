@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {Router} from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
 import {Subscriber} from "rxjs/Rx";
 import {UserService} from "../service";
 
@@ -11,7 +11,7 @@ export class Login {
 	private model = {username: null, password: null};
 	private loginFailed = false;
 
-	constructor(private userService: UserService, private router: Router) {
+	constructor(private userService: UserService, private router: Router, private activeRoute: ActivatedRoute) {
 	}
 
 	public login(event: KeyboardEvent) {
@@ -20,7 +20,7 @@ export class Login {
 			return;
 		}
 		let callbacks = Subscriber.create(
-			(data) => this.router.navigate(["home"]),
+			(data) => this.loginSuccess(),
 			(err) => this.showLoginError()
 		);
 		this.userService.login(this.model.username, this.model.password, callbacks);
@@ -28,5 +28,14 @@ export class Login {
 
 	private showLoginError() {
 		this.loginFailed = true;
+	}
+
+	private loginSuccess() {
+		let nextUrl = this.activeRoute.params['nextUrl'];
+		if (nextUrl) {
+			this.router.navigate([nextUrl]);
+		} else {
+			this.router.navigate(["/admin"]);
+		}
 	}
 }

@@ -12,7 +12,8 @@ import {AppState} from "./app.service";
 import {Home} from "./home";
 import {About} from "./about";
 import {NoContent} from "./no-content";
-import {Login} from "./component/login";
+import {Login} from "./login/login";
+import {AdminPage} from "./admin/admin.page";
 import {AuthGuard} from "./service/auth.gurad";
 import {UserService} from "./service";
 
@@ -37,6 +38,7 @@ const APP_PROVIDERS = [
 	declarations: [
 		App,
 		Login,
+		AdminPage,
 		Home,
 		About,
 		NoContent
