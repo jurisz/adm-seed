@@ -1,10 +1,8 @@
-import {Component, ViewEncapsulation, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {UserService, User} from "../service/user.service";
-
 
 @Component({
 	selector: 'page',
-	encapsulation: ViewEncapsulation.None,
 	styleUrls: [
 		'./app.page.style.css'
 	],
@@ -37,6 +35,8 @@ import {UserService, User} from "../service/user.service";
                     <li class="nav-item dropdown">
                         <a class="nav-link" data-toggle="dropdown" href="#" role="button">System</a>
                         <div class="dropdown-menu">
+                            <a class="dropdown-item" [routerLink]=" ['./users'] ">Users</a>
+                            <a class="dropdown-item" [routerLink]=" ['./roles'] ">User roles</a>
                             <a class="dropdown-item" [routerLink]=" ['./about'] ">About</a>
                         </div>
                     </li>

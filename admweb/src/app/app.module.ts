@@ -10,10 +10,10 @@ import {App} from "./app.component";
 import {APP_RESOLVER_PROVIDERS} from "./app.resolver";
 import {AppState} from "./app.service";
 import {Home} from "./home";
-import {About} from "./about";
 import {NoContent} from "./no-content";
 import {Login} from "./login/login";
 import {AdminPage} from "./admin/admin.page";
+import {AdminModule} from "./admin/admin.module";
 import {AuthGuard} from "./service/auth.gurad";
 import {UserService} from "./service";
 
@@ -40,14 +40,14 @@ const APP_PROVIDERS = [
 		Login,
 		AdminPage,
 		Home,
-		About,
 		NoContent
 	],
 	imports: [ // import Angular's modules
 		BrowserModule,
 		FormsModule,
 		HttpModule,
-		RouterModule.forRoot(ROUTES)
+		RouterModule.forRoot(ROUTES),
+		AdminModule
 	],
 	providers: [ // expose our Services and Providers into Angular's dependency injection
 		ENV_PROVIDERS,
