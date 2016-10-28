@@ -12,7 +12,6 @@ import {AppState} from "./app.service";
 import {Home} from "./home";
 import {NoContent} from "./no-content";
 import {Login} from "./login/login";
-import {AdminPage} from "./admin/admin.page";
 import {AdminModule} from "./admin/admin.module";
 import {AuthGuard} from "./service/auth.gurad";
 import {UserService} from "./service";
@@ -38,18 +37,17 @@ const APP_PROVIDERS = [
 	declarations: [
 		App,
 		Login,
-		AdminPage,
 		Home,
 		NoContent
 	],
-	imports: [ // import Angular's modules
+	imports: [ 
 		BrowserModule,
 		FormsModule,
 		HttpModule,
 		RouterModule.forRoot(ROUTES),
 		AdminModule
 	],
-	providers: [ // expose our Services and Providers into Angular's dependency injection
+	providers: [ 
 		ENV_PROVIDERS,
 		APP_PROVIDERS
 	]

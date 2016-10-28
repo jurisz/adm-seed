@@ -35,6 +35,7 @@ import {UserService, User} from "../service/user.service";
                     <li class="nav-item dropdown">
                         <a class="nav-link" data-toggle="dropdown" href="#" role="button">System</a>
                         <div class="dropdown-menu">
+                            <a class="dropdown-item" [routerLink]=" ['./home'] ">test home</a>
                             <a class="dropdown-item" [routerLink]=" ['./users'] ">Users</a>
                             <a class="dropdown-item" [routerLink]=" ['./roles'] ">User roles</a>
                             <a class="dropdown-item" [routerLink]=" ['./about'] ">About</a>
@@ -55,7 +56,7 @@ import {UserService, User} from "../service/user.service";
 </main>
 `
 })
-export class AdminPage implements OnInit {
+export class AdminBasePage implements OnInit {
 	user = User.emptyUser();
 
 	constructor(public userService: UserService) {
