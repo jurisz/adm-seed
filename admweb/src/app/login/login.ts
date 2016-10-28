@@ -31,11 +31,15 @@ export class Login {
 	}
 
 	private loginSuccess() {
-		let nextUrl = this.activeRoute.params['nextUrl'];
-		if (nextUrl) {
-			this.router.navigate([nextUrl]);
-		} else {
-			this.router.navigate(["/admin"]);
-		}
+		this.activeRoute.params.subscribe(
+			params => {
+				let nextUrl: string = params['nextUrl'];
+				if (nextUrl) {
+					location.pathname = nextUrl;
+				} else {
+					this.router.navigate(["/admin"]);
+				}
+			}
+		);
 	}
 }
