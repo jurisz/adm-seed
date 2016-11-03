@@ -35,7 +35,7 @@ export class Login {
 			params => {
 				let nextUrl: string = params['nextUrl'];
 				if (nextUrl) {
-					location.pathname = nextUrl;
+					this.router.navigateByUrl(nextUrl)
 				} else {
 					this.router.navigate(["/admin"]);
 				}

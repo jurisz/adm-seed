@@ -13,6 +13,8 @@ export class User {
 	}
 }
 
+const LOGIN_SESSION_KEY = "loggedIn";
+
 @Injectable()
 export class UserService {
 	public user = User.emptyUser();
@@ -45,12 +47,14 @@ export class UserService {
 
 	private makeLogin(permissions:any, username:String):void {
 		this.user = new User(true, username, permissions);
+		sessionStorage.setItem(LOGIN_SESSION_KEY, "true");
 		this.userUpdatedSource.next(this.user);
 		this.startServerPooling();
     }
 
     private resetUser():void {
 		this.user = User.emptyUser();
+		sessionStorage.removeItem(LOGIN_SESSION_KEY)
 		if (this.loggedinPoller != null) {
 			this.loggedinPoller.unsubscribe();
 		}
@@ -58,7 +62,11 @@ export class UserService {
     }
 
 	public isLoggedIn(): boolean {
-        return this.user.isLoggedIn;
+		var success = this.user.isLoggedIn || sessionStorage[LOGIN_SESSION_KEY];
+		if (success && !this.user.isLoggedIn) {
+			this.startServerPooling()
+		}
+		return success;
     }
 
 	public logout() {
