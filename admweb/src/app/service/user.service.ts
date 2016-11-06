@@ -13,11 +13,11 @@ export class User {
 	}
 }
 
-const LOGIN_SESSION_KEY = "loggedIn";
+const LOGIN_SESSION_KEY = "login";
 
 @Injectable()
 export class UserService {
-	public user = User.emptyUser();
+	private user = User.emptyUser();
 
 	private userUpdatedSource = new Subject<User>();
 	userUpdated$ = this.userUpdatedSource.asObservable();
@@ -47,14 +47,14 @@ export class UserService {
 
 	private makeLogin(permissions:any, username:String):void {
 		this.user = new User(true, username, permissions);
-		sessionStorage.setItem(LOGIN_SESSION_KEY, "true");
+		sessionStorage.setItem(LOGIN_SESSION_KEY, JSON.stringify(this.user));
 		this.userUpdatedSource.next(this.user);
 		this.startServerPooling();
     }
 
     private resetUser():void {
 		this.user = User.emptyUser();
-		sessionStorage.removeItem(LOGIN_SESSION_KEY)
+		sessionStorage.removeItem(LOGIN_SESSION_KEY);
 		if (this.loggedinPoller != null) {
 			this.loggedinPoller.unsubscribe();
 		}
@@ -62,9 +62,11 @@ export class UserService {
     }
 
 	public isLoggedIn(): boolean {
-		var success = this.user.isLoggedIn || sessionStorage[LOGIN_SESSION_KEY];
+		let sessionUser = sessionStorage[LOGIN_SESSION_KEY];
+		let success = this.user.isLoggedIn || sessionUser;
 		if (success && !this.user.isLoggedIn) {
-			this.startServerPooling()
+			this.user = JSON.parse(sessionStorage.getItem(LOGIN_SESSION_KEY));
+			this.startServerPooling();
 		}
 		return success;
     }
@@ -75,7 +77,7 @@ export class UserService {
 	}
 
 	private startServerPooling() {
-		this.loggedinPoller = Observable.interval(5 * 1000)
+		this.loggedinPoller = Observable.interval(30 * 1000)
 			.switchMap(() => this.http.get('/api/admin/loggedin'))
 			.subscribe(
 				(response: Response) => {
