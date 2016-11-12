@@ -1,5 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {UserService, User} from "../service/user.service";
+import {Router} from "@angular/router";
 
 @Component({
 	selector: 'page',
@@ -13,7 +14,7 @@ import {UserService, User} from "../service/user.service";
             <button class="navbar-toggler hidden-md-up" type="button" data-toggle="collapse" data-target="#navbar">
                 &#9776;
             </button>
-            <a class="navbar-brand" [routerLink]=" ['./'] "><i class="fa fa-home"></i> Backoffice</a>
+            <a class="navbar-brand" [routerLink]=" ['./home'] "><i class="fa fa-home"></i> Backoffice</a>
             <div class="collapse navbar-toggleable-sm" id="navbar">
                 <ul class="nav navbar-nav">
                     <li class="nav-item dropdown">
@@ -42,9 +43,9 @@ import {UserService, User} from "../service/user.service";
                         </div>
                     </li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right pull-xs-right">
-                	<li class="nav-item">{{ user.username }}</li>
-                    <li class="nav-item"><a class="nav-link" [routerLink]=" ['./login'] ">Login</a></li>
+                <ul class="nav navbar-nav pull-right">
+                	<li class="nav-item"><a class="login-user"><i class="fa fa-user"></i> {{ user.username }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" (click)="logout()" role="button">Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -59,12 +60,18 @@ import {UserService, User} from "../service/user.service";
 export class AdminBasePage implements OnInit {
 	user = User.emptyUser();
 
-	constructor(public userService: UserService) {
+	constructor(private userService: UserService, private router: Router) {
+		this.user = userService.user;
 	}
 
 	ngOnInit(): void {
 		this.userService.userUpdated$.subscribe(user=> {
 			this.user = user;
 		});
+	}
+
+	logout(): void {
+		this.userService.logout();
+		this.router.navigate(["/login"]);
 	}
 }

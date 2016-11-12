@@ -25,3 +25,9 @@ main {
 .navbar-nav > .open {
 	background-color: #e7e7e7;
 }
+
+.login-user {
+	display: block;
+	padding-top: .425rem;
+	padding-bottom: .425rem;
+}
