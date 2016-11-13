@@ -2,10 +2,10 @@ package org.juz.seed.web;
 
 import org.juz.seed.config.SpringBootApplicationConfiguration;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.context.embedded.EmbeddedWebApplicationContext;
+import org.springframework.boot.system.ApplicationPidFileWriter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 
