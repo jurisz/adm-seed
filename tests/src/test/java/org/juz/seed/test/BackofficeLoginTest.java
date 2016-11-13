@@ -3,9 +3,11 @@ package org.juz.seed.test;
 import org.junit.Test;
 import org.juz.acceptance.AcceptanceRestTemplate;
 import org.juz.common.api.UserLoginBean;
+import org.juz.common.infra.restclient.RestTemplateFactoryBean;
 import org.juz.common.test.util.HttpStatusErrorExceptionUtils;
 import org.juz.seed.base.security.Permissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Set;
 
@@ -16,6 +18,18 @@ public class BackofficeLoginTest extends BaseIntegrationTest {
 
 	@Autowired
 	private AcceptanceRestTemplate acceptanceRestTemplate;
+
+	private RestTemplate restTemplate = createTemplateWithoutBasicAuth();
+
+	public BackofficeLoginTest() throws Exception {
+	}
+
+	private RestTemplate createTemplateWithoutBasicAuth() throws Exception {
+		RestTemplateFactoryBean factoryBean = new RestTemplateFactoryBean()
+				.withEnableLoggingFilter(true);
+		factoryBean.afterPropertiesSet();
+		return factoryBean.getObject();
+	}
 
 	@Test
 	public void successfulLogin() throws Exception {
@@ -35,21 +49,39 @@ public class BackofficeLoginTest extends BaseIntegrationTest {
 	@Test
 	public void isLoggedInCheck() throws Exception {
 		String loggedInUrl = acceptanceRestTemplate.baseUrl() + "/api/admin/loggedin";
-		String logoutUrl = acceptanceRestTemplate.baseUrl() + "/api/admin/logout";
 
-		String isLoggedIn = acceptanceRestTemplate.restTemplate().getForObject(loggedInUrl, String.class);
+		//when: first logout, other test may be logged in
+		logout();
+
+		String isLoggedIn = restTemplate.getForObject(loggedInUrl, String.class);
 		assertThat(isLoggedIn, is("false"));
 
 		login("test", "test");
 
-		isLoggedIn = acceptanceRestTemplate.restTemplate().getForObject(loggedInUrl, String.class);
+		isLoggedIn = restTemplate.getForObject(loggedInUrl, String.class);
 		assertThat(isLoggedIn, is("true"));
 
 		//when: logout
-		acceptanceRestTemplate.restTemplate().getForObject(logoutUrl, String.class);
+		logout();
 
-		isLoggedIn = acceptanceRestTemplate.restTemplate().getForObject(loggedInUrl, String.class);
+		isLoggedIn = restTemplate.getForObject(loggedInUrl, String.class);
 		assertThat(isLoggedIn, is("false"));
+	}
+
+	@Test
+	public void afterLoginCanGetUserName() throws Exception {
+		logout();
+
+		String userNameUrl = acceptanceRestTemplate.baseUrl() + "/api/admin/loggedin/username";
+
+		String errorMessage = HttpStatusErrorExceptionUtils.requireErrorWithMessage(() ->
+				restTemplate.getForObject(userNameUrl, String.class));
+		assertThat(errorMessage, containsString("\"Access Denied\""));
+
+		login("test", "test");
+
+		String userName = restTemplate.getForObject(userNameUrl, String.class);
+		assertThat(userName, is("test"));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -59,7 +91,11 @@ public class BackofficeLoginTest extends BaseIntegrationTest {
 		userBean.setName(user);
 		userBean.setPassword(pass);
 
-		return acceptanceRestTemplate.restTemplate().postForObject(url, userBean, Set.class);
+		return restTemplate.postForObject(url, userBean, Set.class);
 	}
 
+	private void logout() {
+		String logoutUrl = acceptanceRestTemplate.baseUrl() + "/api/admin/logout";
+		restTemplate.getForObject(logoutUrl, String.class);
+	}
 }

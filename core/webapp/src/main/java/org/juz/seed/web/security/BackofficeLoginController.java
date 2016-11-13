@@ -63,22 +63,23 @@ public class BackofficeLoginController {
 		return isAuthenticated(synchronizeAuthentication());
 	}
 
+	private Authentication synchronizeAuthentication() {
+		SpringWebSecuritySynchronizationHelper.securityContextHttpSessionSynchronization(httpSession);
+		return SecurityContextHolder.getContext().getAuthentication();
+	}
+	
 	@RequestMapping(value = "/loggedin/username", method = RequestMethod.GET)
 	public String getCurrentUsername() {
-		Authentication authentication = synchronizeAuthentication();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		return isAuthenticated(authentication) ? authentication.getName() : StringUtils.EMPTY;
 	}
 
 	@RequestMapping(value = "/loggedin/permissions", method = RequestMethod.GET)
 	public Collection<String> getCurrentUserPermissions() {
-		Authentication authentication = synchronizeAuthentication();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		return isAuthenticated(authentication) ? transformPermissions(authentication) : Collections.emptySet();
 	}
 
-	private Authentication synchronizeAuthentication() {
-		SpringWebSecuritySynchronizationHelper.securityContextHttpSessionSynchronization(httpSession);
-		return SecurityContextHolder.getContext().getAuthentication();
-	}
 
 	private boolean isAuthenticated(Authentication authentication) {
 		return authentication != null && authentication.isAuthenticated();
