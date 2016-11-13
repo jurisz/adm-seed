@@ -74,7 +74,7 @@ export class UserService {
 
 	public logout(): void {
 		this.resetUser();
-		this.http.get('/logout').subscribe();
+		this.http.get('/api/admin/logout').subscribe();
 	}
 
 	private startServerPooling(): void {

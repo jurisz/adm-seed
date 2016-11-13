@@ -41,7 +41,7 @@ public class BaseWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().anyRequest().authenticated()
 				.and().exceptionHandling().authenticationEntryPoint(http403ForbiddenEntryPoint())
 				.and().formLogin().loginPage("/login.html").failureUrl("/login.html?login_error=1").loginProcessingUrl("/login").permitAll()
-				.and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler())
+				.and().logout().logoutUrl("/api/admin/logout").logoutSuccessHandler(logoutSuccessHandler())
 				.and().httpBasic().realmName("backoffice")
 				.and().csrf().disable();
 	}
