@@ -6,6 +6,7 @@ import {AdminHomePage} from "./admin.home";
 import {About} from "./about/about.component";
 import {UserModule} from "./user/user.module";
 import {ROUTES} from "./admin.routes";
+import {NotificationsComponent} from "../components/notificaton/notification.component";
 
 @NgModule({
 	imports: [
@@ -17,6 +18,7 @@ import {ROUTES} from "./admin.routes";
 		AdminBasePage,
 		AdminHomePage,
 		About,
+		NotificationsComponent
 	]
 })
 export class AdminModule {

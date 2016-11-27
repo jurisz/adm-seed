@@ -3,6 +3,7 @@ import {Http, Response} from "@angular/http";
 import {Observer, Observable, Subscription} from "rxjs/Rx";
 import {empty} from "rxjs/Observer";
 import {Subject} from "rxjs/Subject";
+import {NotificationsService} from "../components/notificaton/notification.service";
 
 export class User {
 	constructor(public isLoggedIn: boolean, public username: String, public permissions: String[]) {
@@ -21,17 +22,15 @@ export class UserService {
 
 	private userUpdatedSource = new Subject<User>();
 	userUpdated$ = this.userUpdatedSource.asObservable();
-	private sessionErrorsSource = new Subject<String>();
-	sessionErrors$ = this.sessionErrorsSource.asObservable();
 
 	private loggedinPoller: Subscription;
 
-	constructor(public http: Http) {
+	constructor(private http: Http, private notificationService: NotificationsService) {
 	}
 
 	public login(username: String, password: String, callbacks: Observer<any> = empty): void {
 		this.http.post('/api/admin/login', {'name': username, 'password': password})
-			.map(res=> res.json())
+			.map(res => res.json())
 			.subscribe(
 				(data) => {
 					this.makeLogin(data, username);
@@ -79,25 +78,30 @@ export class UserService {
 
 	private startServerPooling(): void {
 		this.loggedinPoller = Observable.interval(5 * 1000)
-			.switchMap(() => this.http.get('/api/admin/loggedin'))
+			.switchMap(
+				() => this.http.get('/api/admin/loggedin')
+					.catch(error => {
+						this.handleIsLoggedInAjaxError(error);
+						return Observable.empty();
+					})
+			)
+			.retry()
 			.subscribe(
 				(response: Response) => {
 					if (response.text() == 'false' && this.user.isLoggedIn) {
-						this.reportError('sessionExpired');
+						this.notificationService.registerError('sessionExpired');
+					} else {
+						this.notificationService.clearAllErrors();
 					}
-				},
-				(error) => {
-					if (error.status == 401 || error.status == 403) {
-						this.reportError('sessionExpired');
-					} else if (error.status == 0 || error.status >= 404) {
-						this.reportError('connectionLost');
-					}
-
 				}
 			);
 	}
 
-	private reportError(errorMsg: string): void {
-		this.sessionErrorsSource.next(errorMsg);
+	private handleIsLoggedInAjaxError(error) {
+		if (error.status == 401 || error.status == 403) {
+			this.notificationService.registerError('sessionExpired');
+		} else if (error.status == 0 || error.status >= 404) {
+			this.notificationService.registerError('connectionLost');
+		}
 	}
 }

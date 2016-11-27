@@ -1,5 +1,4 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
 import {Subject} from "rxjs/Rx";
 
 export type GlobalErrorType = 'clearAllErrors' | 'sessionExpired' | 'connectionLost';
@@ -12,9 +11,6 @@ export class NotificationsService {
 
 	private notificationsSender = new Subject<String>();
 	notificationsSender$ = this.notificationsSender.asObservable();
-
-	constructor(public http: Http) {
-	}
 
 	public registerError(errorType: GlobalErrorType): void {
 		this.errorsSender.next(errorType);

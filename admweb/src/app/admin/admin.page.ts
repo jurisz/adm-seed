@@ -51,7 +51,7 @@ import {Router} from "@angular/router";
         </div>
 	</nav>
 </div>
-
+<notifications></notifications>
 <main>
   <router-outlet></router-outlet>
 </main>
