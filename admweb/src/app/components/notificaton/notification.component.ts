@@ -1,6 +1,13 @@
 import {Component, OnInit} from "@angular/core";
 import {NotificationsService, GlobalErrorType} from "./notification.service";
 
+const NOTIFICATION_TIMEOUT = 4 * 1000;
+
+class NotificationData {
+	constructor(public id: Number, public message: String) {
+	}
+}
+
 @Component({
 	selector: 'notifications',
 	// encapsulation: ViewEncapsulation.None,
@@ -17,6 +24,11 @@ import {NotificationsService, GlobalErrorType} from "./notification.service";
 	</section>
 </div>
 </div>
+<div class="global-notifications">
+	<div class="alert alert-info" *ngFor="let notification of notifications" id="{{notification.id}}">
+		{{notification.message}}	
+	</div>
+</div>
     `,
 	styles: [`
 .global-errors{
@@ -28,12 +40,20 @@ import {NotificationsService, GlobalErrorType} from "./notification.service";
   width: 500px;
   z-index: 200;
 }
+.global-notifications {
+    width: 30%;
+    position: absolute;
+    right: 0;
+    bottom: 100px;
+    z-index: 201;
+}
     `]
 })
-
 export class NotificationsComponent implements OnInit {
 
 	globalErrors: Map<GlobalErrorType, boolean> = new Map();
+	notificationsCounter = 0;
+	notifications: NotificationData[] = [];
 
 	constructor(private service: NotificationsService) {
 	}
@@ -54,8 +74,16 @@ export class NotificationsComponent implements OnInit {
 		});
 
 		this.service.notificationsSender$.subscribe(message => {
-			//TODO
+			let notificationId = this.notificationsCounter++;
+			let notification = new NotificationData(notificationId, message);
+			this.notifications.push(notification);
+			setTimeout(() => this.clearNotification(notificationId), NOTIFICATION_TIMEOUT);
 		});
+	}
+
+	private clearNotification(notificationId: number) {
+		let index = this.notifications.findIndex(notification => notification.id === notificationId);
+		this.notifications.splice(index, 1);
 	}
 
 	reloadPage(): void {

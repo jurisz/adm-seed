@@ -77,7 +77,7 @@ export class UserService {
 	}
 
 	private startServerPooling(): void {
-		this.loggedinPoller = Observable.interval(5 * 1000)
+		this.loggedinPoller = Observable.interval(25 * 1000)
 			.switchMap(
 				() => this.http.get('/api/admin/loggedin')
 					.catch(error => {
