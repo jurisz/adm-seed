@@ -12,6 +12,9 @@ export class NotificationsService {
 	private notificationsSender = new Subject<String>();
 	notificationsSender$ = this.notificationsSender.asObservable();
 
+	private overlaySender = new Subject<boolean>();
+	overlaySender$ = this.overlaySender.asObservable();
+	
 	public registerError(errorType: GlobalErrorType): void {
 		this.errorsSender.next(errorType);
 	}
@@ -22,5 +25,13 @@ export class NotificationsService {
 
 	public registerNotification(message: String): void {
 		this.notificationsSender.next(message);
+	}
+
+	public showOverlay(): void {
+		this.overlaySender.next(true);
+	}
+
+	public hideOverlay(): void {
+		this.overlaySender.next(false);
 	}
 }

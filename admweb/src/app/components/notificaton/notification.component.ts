@@ -12,6 +12,12 @@ class NotificationData {
 	selector: 'notifications',
 	// encapsulation: ViewEncapsulation.None,
 	template: `
+<div class="overlay" *ngIf="overlayEnabled">
+	<div class="spinner">
+		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+	</div>
+</div>
+
 <div class="global-errors">
 <div class="global-error fade-in alert alert-danger" *ngIf="globalErrors.has('sessionExpired')">
 	<section>
@@ -31,6 +37,19 @@ class NotificationData {
 </div>
     `,
 	styles: [`
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1001;
+}	
+
+.spinner {
+  top:48%;
+  left: 48%;
+  position:absolute;
+}
+	
 .global-errors{
   margin-top: 60px;
 }
@@ -54,6 +73,7 @@ export class NotificationsComponent implements OnInit {
 	globalErrors: Map<GlobalErrorType, boolean> = new Map();
 	notificationsCounter = 0;
 	notifications: NotificationData[] = [];
+	overlayEnabled: boolean = false;
 
 	constructor(private service: NotificationsService) {
 	}
@@ -79,6 +99,8 @@ export class NotificationsComponent implements OnInit {
 			this.notifications.push(notification);
 			setTimeout(() => this.clearNotification(notificationId), NOTIFICATION_TIMEOUT);
 		});
+
+		this.service.overlaySender$.subscribe(enabled => this.overlayEnabled = enabled)
 	}
 
 	private clearNotification(notificationId: number) {

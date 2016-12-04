@@ -6,7 +6,8 @@ import {NotificationsService} from "../../components/notificaton/notification.se
 	template: `
     <h1>Users</h1>
     
-    <button type="button" class="btn btn-success" (click)="showNotification()">Success</button>
+    <button type="button" class="btn btn-success" (click)="showNotification()">Notification</button>
+    <button type="button" class="btn btn-success" (click)="showSpinner()">Overlay show</button>
   `
 })
 export class Users implements OnInit {
@@ -19,6 +20,11 @@ export class Users implements OnInit {
 	}
 
 	showNotification(): void {
-		this.notificationService.registerNotification("Some nice notification message!")
+		this.notificationService.registerNotification("Some nice notification message!");
+	}
+
+	showSpinner(): void {
+		this.notificationService.showOverlay();
+		setTimeout(() => this.notificationService.hideOverlay(), 3000);
 	}
 }
