@@ -34,7 +34,7 @@ import {Router} from "@angular/router";
 					<div class="dropdown-menu">
 						<a class="dropdown-item" [routerLink]=" ['./home'] ">test home</a>
 						<a class="dropdown-item" [routerLink]=" ['./users'] ">Users</a>
-						<a class="dropdown-item" [routerLink]=" ['./roles'] ">User roles</a>
+						<a class="dropdown-item" [routerLink]=" ['./user-roles'] ">User roles</a>
 						<a class="dropdown-item" [routerLink]=" ['./about'] ">About</a>
 					</div>
 				</li>

@@ -2,7 +2,8 @@ import {Routes} from "@angular/router";
 import {AdminHomePage} from "./admin.home";
 import {AdminBasePage} from "./admin.page";
 import {AuthGuard} from "../service/auth.gurad";
-import {Users} from "./user/user.list.component";
+import {About} from "./about/about.component";
+import {USER_ROUTES} from "./user/user.routes";
 
 export const ROUTES: Routes = [
 	{
@@ -12,8 +13,7 @@ export const ROUTES: Routes = [
 		children: [
 			{path: '', redirectTo: 'home', pathMatch: 'full'},
 			{path: 'home', component: AdminHomePage},
-			{path: 'users', component: Users},
-			//USER_ROUTES
-		]
+			{path: 'about', component: About}
+		].concat(USER_ROUTES)
 	}
 ];

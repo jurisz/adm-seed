@@ -46,14 +46,14 @@ export class UserService {
 
 	private makeLogin(permissions: any, username: String): void {
 		this.user = new User(true, username, permissions);
-		sessionStorage.setItem(LOGIN_SESSION_KEY, JSON.stringify(this.user));
+		localStorage.setItem(LOGIN_SESSION_KEY, JSON.stringify(this.user));
 		this.userUpdatedSource.next(this.user);
 		this.startServerPooling();
 	}
 
 	private resetUser(): void {
 		this.user = User.emptyUser();
-		sessionStorage.removeItem(LOGIN_SESSION_KEY);
+		localStorage.removeItem(LOGIN_SESSION_KEY);
 		if (this.loggedinPoller != null) {
 			this.loggedinPoller.unsubscribe();
 		}
@@ -61,10 +61,10 @@ export class UserService {
 	}
 
 	public isLoggedIn(): boolean {
-		let sessionUser = sessionStorage[LOGIN_SESSION_KEY];
+		let sessionUser = localStorage[LOGIN_SESSION_KEY];
 		let success = this.user.isLoggedIn || sessionUser;
 		if (success && !this.user.isLoggedIn) {
-			this.user = JSON.parse(sessionStorage.getItem(LOGIN_SESSION_KEY));
+			this.user = JSON.parse(localStorage.getItem(LOGIN_SESSION_KEY));
 			this.userUpdatedSource.next(this.user);
 			this.startServerPooling();
 		}
