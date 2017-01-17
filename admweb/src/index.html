@@ -7,15 +7,15 @@
 
 	<title>Admin backoffice</title>
 
-	<meta name="description" content="<%= webpackConfig.metadata.title %>">
+	<meta name="description" content="<%= htmlWebpackPlugin.options.title %>">
 
 	<% if (webpackConfig.htmlElements.headTags) { %>
 	<%= webpackConfig.htmlElements.headTags %>
 	<% } %>
 
-	<base href="<%= webpackConfig.metadata.baseUrl %>">
+	<base href="<%= htmlWebpackPlugin.options.metadata.baseUrl %>">
 
-	<link rel="stylesheet" href="//cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
 </head>
@@ -27,15 +27,14 @@
 	</div>
 </app>
 
-<% if (webpackConfig.metadata.isDevServer) { %>
-<!-- Webpack Dev Server reload -->
+<% if (htmlWebpackPlugin.options.metadata.isDevServer) { %>
 <script src="/webpack-dev-server.js"></script>
 <% } %>
 
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/tether/1.3.2/js/tether.min.js"></script>
-<script src="//cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.js"></script>
 
 </body>
 </html>

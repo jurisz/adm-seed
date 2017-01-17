@@ -7,6 +7,7 @@ import {About} from "./about/about.component";
 import {UserModule} from "./user/user.module";
 import {ROUTES} from "./admin.routes";
 import {NotificationsComponent} from "../components/notificaton/notification.component";
+import {OpenViewTabsComponent} from "../components/viewtabs/viewtabs.component";
 
 @NgModule({
 	imports: [
@@ -18,7 +19,8 @@ import {NotificationsComponent} from "../components/notificaton/notification.com
 		AdminBasePage,
 		AdminHomePage,
 		About,
-		NotificationsComponent
+		NotificationsComponent,
+		OpenViewTabsComponent
 	]
 })
 export class AdminModule {

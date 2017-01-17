@@ -41,7 +41,9 @@ class NotificationData {
     position: absolute;
     width: 100%;
     height: 100%;
-    z-index: 1001;
+    top:0;
+    left:0;
+    z-index: 99999;
 }	
 
 .spinner {
