@@ -1,7 +1,7 @@
 /*
  * Angular 2 decorators and services
  */
-import {Component} from "@angular/core";
+import {Component, ViewEncapsulation} from "@angular/core";
 import {UserService, User} from "./service/user.service";
 
 /*
@@ -10,6 +10,10 @@ import {UserService, User} from "./service/user.service";
  */
 @Component({
 	selector: 'app',
+	encapsulation: ViewEncapsulation.None,
+	styleUrls: [
+		'../assets/css/styles.css'
+	],
 	template: `
 <main>
   <router-outlet></router-outlet>

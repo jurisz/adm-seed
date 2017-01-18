@@ -6,7 +6,7 @@ import {Component, OnInit} from "@angular/core";
     <h1>User roles</h1>
     
     <div>
-      <ngx-datatable
+      <ngx-datatable class="material"
         [rows]="rows"
         [columns]="columns">
       </ngx-datatable>
