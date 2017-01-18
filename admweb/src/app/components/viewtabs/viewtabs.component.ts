@@ -6,7 +6,7 @@ const MAX_OPEN_VIEWS = 12;
 @Component({
 	selector: 'openviews',
 	template: `
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs openview-nav">
   <li class="nav-item">
     <a class="nav-link active" href="#">Active</a>
   </li>
@@ -22,7 +22,7 @@ const MAX_OPEN_VIEWS = 12;
 </ul>
     `,
 	styles: [`
-.nav-tabs {
+.openview-nav {
 	margin-top: 45px;
 }
 	

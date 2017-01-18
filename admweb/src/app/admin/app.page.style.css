@@ -1,11 +1,10 @@
 
 main {
-	margin-top: 3.5em;
+	padding: 0 0.5rem 0 0.5rem;
 }
 
 .navbar {
 	padding: 0 !important;
-	border-bottom: solid 1px rgba(0, 0, 0, 0.15);
 }
 
 .nav-item {

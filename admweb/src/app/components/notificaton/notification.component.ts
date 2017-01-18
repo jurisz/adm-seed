@@ -52,9 +52,6 @@ class NotificationData {
   position:absolute;
 }
 	
-.global-errors{
-  margin-top: 60px;
-}
 .global-error {
   margin: 0 auto;
   padding: 15px;
