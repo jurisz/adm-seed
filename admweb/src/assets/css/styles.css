@@ -1,3 +1,11 @@
-@import "./datatable/datatable.css";
-@import "./datatable/material.css";
-@import "./datatable/icons.css";
+.dataTable {
+	width: 100%;
+}
+
+table.dataTable thead tr {
+	background: #E7E7E7;
+}
+
+.aw-fa-sm {
+	font-size: 0.5rem;
+}

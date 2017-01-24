@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core";
+import {ColumnDefinition} from "../../components/datatable/ng-table.component";
 
 @Component({
 	selector: 'roles',
@@ -6,10 +7,9 @@ import {Component, OnInit} from "@angular/core";
     <h1>User roles</h1>
     
     <div>
-      <ngx-datatable class="material"
-        [rows]="rows"
-        [columns]="columns">
-      </ngx-datatable>
+     <ng-table [rows]="rows" [columns]="columns">
+     
+	</ng-table>
     </div>
   `
 })
@@ -20,16 +20,16 @@ export class Roles implements OnInit {
 		{name: 'Dany', gender: 'Male', company: 'KFC'},
 		{name: 'Molly', gender: 'Female', company: 'Burger King'},
 	];
-	columns = [
-		{prop: 'name'},
-		{name: 'Gender'},
-		{name: 'Company'}
+
+	columns: Array<ColumnDefinition> = [
+		ColumnDefinition.define('name'),
+		ColumnDefinition.define('gender', false),
+		ColumnDefinition.define('company'),
 	];
-	
+
 	constructor() {
 	}
 
 	ngOnInit() {
-
 	}
 }

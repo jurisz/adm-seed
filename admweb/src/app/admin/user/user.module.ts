@@ -1,15 +1,13 @@
 import {NgModule} from "@angular/core";
-import {CommonModule} from "@angular/common";
 import {Users} from "./user.list.component";
 import {User} from "./user.edit.component";
 import {Roles} from "./role.list.component";
 import {Role} from "./role.edit.component";
-import {NgxDatatableModule} from "@swimlane/ngx-datatable";
+import {SharedModule} from "../../components/shared.module";
 
 @NgModule({
 	imports: [
-		CommonModule,
-		NgxDatatableModule
+		SharedModule
 	],
 	declarations: [
 		Users,
