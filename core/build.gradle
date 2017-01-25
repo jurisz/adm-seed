@@ -26,6 +26,8 @@ project(":core:base") {
 	dependencies {
 		compile project(":core:api")
 		compile lib.juz_commons_infrastructure
+
+		testCompile lib.juz_test_base
 	}
 }
 
