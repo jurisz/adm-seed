@@ -3,7 +3,7 @@ ext {
 	spring_platform_version = 'Athens-RELEASE'
 	camel_version = '2.18.0'
 	xdocreport_version = '1.0.5'
-	juz_commons_version = '1.0.4-RELEASE'
+	juz_commons_version = '1.0.5-RELEASE'
 
 	ext.lib = [
 

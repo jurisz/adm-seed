@@ -85,10 +85,6 @@ class PersistenceConfiguration {
 		properties.put("org.hibernate.envers.audit_table_prefix", "AUDIT_");
 		properties.put("org.hibernate.envers.audit_table_suffix", "");
 
-		properties.put("jadira.usertype.autoRegisterUserTypes", "true");
-		properties.put("jadira.usertype.javaZone", "jvm");
-		properties.put("jadira.usertype.databaseZone", "jvm");
-
 		return properties;
 	}
 

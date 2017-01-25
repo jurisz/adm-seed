@@ -65,7 +65,7 @@ export class NgTableComponent {
 		this._columns = values;
 	}
 
-	public constructor(private    sanitizer: DomSanitizer) {
+	public constructor(private sanitizer: DomSanitizer) {
 	}
 
 	public sanitize(html: string): SafeHtml {
