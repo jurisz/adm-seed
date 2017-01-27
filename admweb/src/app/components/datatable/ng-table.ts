@@ -23,6 +23,36 @@ export class ColumnDefinition {
 	}
 }
 
+export class PageResult {
+	totalRecords: number;
+	page: number;
+	results: Array<any>;
+
+	static empty(): PageResult {
+		return {totalRecords: 0, page: 0, results: []}
+	}
+}
+
+export type FilterDataType = 'INTEGER' | 'LONG' | 'STRING' | 'BIG_DECIMAL' | 'BOOLEAN' | 'ENUM' | 'LOCAL_DATE' | 'LOCAL_DATE_TIME';
+
+export class Filter {
+	propertyName: string;
+	filterOperation: string;
+	parameterValueType: FilterDataType;
+	filterValue1: string;
+	filterValue2: string;
+}
+
+export class EntityPageQuery {
+	page: number = 1;
+	pageSize: number = 20;
+	sortOption: {
+		propertyName: string;
+		direction: string;
+	};
+	filters: Filter[] = [];
+}
+
 @Component({
 	selector: 'ng-table',
 	template: `
@@ -39,31 +69,31 @@ export class ColumnDefinition {
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let row of rows" (dblclick)="dblclickOnRow(row)">
-          <td *ngFor="let column of columns" [innerHtml]="sanitize(getData(row, column.propertyName))"></td>
+        <tr *ngFor="let item of pageResult.results" (dblclick)="dblclickOnRow(item)">
+          <td *ngFor="let column of columns" [innerHtml]="sanitize(getData(item, column.propertyName))"></td>
         </tr>
       </tbody>
       
-      <pagination *ngIf="totalItems <= itemsPerPage"
-      			[boundaryLinks]="true" [totalItems]="totalItems"  [(ngModel)]="currentPage" 
+      <pagination *ngIf="pageResult.totalRecords > 20"
+      			[boundaryLinks]="true" [totalItems]="pageResult.totalRecords"  [(ngModel)]="currentPage" 
                 itemsPerPage="20" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"></pagination>
     </table>
   `
 })
 export class NgTableComponent {
-	private _columns: Array<ColumnDefinition> = [];
 
-	// Table values
-	@Input() public rows: Array<any> = [];
+	@Input()
+	public columns: Array<ColumnDefinition> = [];
+
+	@Input()
+	public pageSize: number;
+
+	@Input()
+	public pageResult: PageResult = PageResult.empty();
 
 	// Outputs (Events)
 	@Output() public tableSorting: EventEmitter<ColumnDefinition> = new EventEmitter();
 	@Output() public openRow: EventEmitter<any> = new EventEmitter();
-
-	@Input()
-	public set columns(values: Array<ColumnDefinition>) {
-		this._columns = values;
-	}
 
 	public constructor(private sanitizer: DomSanitizer) {
 	}
@@ -72,14 +102,10 @@ export class NgTableComponent {
 		return this.sanitizer.bypassSecurityTrustHtml(html);
 	}
 
-	public get columns(): Array <ColumnDefinition> {
-		return this._columns;
-	}
-
 	public sortBy(column: ColumnDefinition): boolean {
-		for (let col of this._columns) {
+		for (let col of this.columns) {
 			if (col.propertyName == column.propertyName) {
-				column.sort = column.sort == 'desc' ? 'asc' : 'desc';
+				column.sort = column.sort == 'DESC' ? 'ASC' : 'DESC';
 			} else {
 				col.sort = '';
 			}
@@ -88,11 +114,11 @@ export class NgTableComponent {
 		return false;
 	}
 
-	public getData(row: any, propertyName: string): string {
-		return propertyName.split('.').reduce((prev: any, curr: string) => prev[curr], row);
+	public getData(item: any, propertyName: string): string {
+		return propertyName.split('.').reduce((prev: any, curr: string) => prev[curr], item);
 	}
 
-	public dblclickOnRow(row: any): void {
-		this.openRow.emit(row);
+	public dblclickOnRow(item: any): void {
+		this.openRow.emit(item);
 	}
 }

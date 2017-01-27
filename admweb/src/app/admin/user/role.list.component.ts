@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {ColumnDefinition} from "../../components/datatable/ng-table.component";
+import {ColumnDefinition, PageResult} from "../../components/datatable/ng-table";
 
 @Component({
 	selector: 'roles',
@@ -7,7 +7,7 @@ import {ColumnDefinition} from "../../components/datatable/ng-table.component";
     <h1>User roles</h1>
     
     <div>
-     <ng-table [rows]="rows" [columns]="columns">
+     <ng-table [pageResult]="pageResult" [columns]="columns" (openRow)="openRow($event)">
      
 	</ng-table>
     </div>
@@ -15,11 +15,15 @@ import {ColumnDefinition} from "../../components/datatable/ng-table.component";
 })
 export class Roles implements OnInit {
 
-	rows = [
-		{name: 'Austin', gender: 'Male', company: 'Swimlane'},
-		{name: 'Dany', gender: 'Male', company: 'KFC'},
-		{name: 'Molly', gender: 'Female', company: 'Burger King'},
-	];
+	pageResult: PageResult = {
+		page: 1,
+		totalRecords: 3,
+		results: [
+			{name: 'Austin', gender: 'Male', company: 'Swimlane'},
+			{name: 'Dany', gender: 'Male', company: 'KFC'},
+			{name: 'Molly', gender: 'Female', company: 'Burger King'},
+		]
+	};
 
 	columns: Array<ColumnDefinition> = [
 		ColumnDefinition.define('name'),
@@ -31,5 +35,14 @@ export class Roles implements OnInit {
 	}
 
 	ngOnInit() {
+	}
+
+	public loadPageData() {
+
+	}
+
+	public openRow(item) {
+		console.log('openRow')
+		console.log(item)
 	}
 }

@@ -1,18 +1,43 @@
 import {Component, OnInit} from "@angular/core";
+import {Http} from "@angular/http";
+import {ColumnDefinition, PageResult} from "../../components/datatable/ng-table";
 
 @Component({
 	selector: 'users',
-	template: `
-    <h1>Users</h1>
-    
-  `
+	templateUrl: './user.list.html'
 })
 export class Users implements OnInit {
 
-	constructor() {
+	columns: Array<ColumnDefinition> = [
+		ColumnDefinition.define('id'),
+		ColumnDefinition.define('username'),
+		ColumnDefinition.define('roleName', false),
+	];
+
+	pageResult = PageResult.empty;
+
+	pageQuery = {
+		page: 1,
+		pageSize: 20
+	};
+
+	constructor(private http: Http) {
 	}
 
 	ngOnInit() {
+		this.loadPageData()
+	}
 
+	public loadPageData() {
+		this.http.post('/api/admin/security/user/list', this.pageQuery)
+			.map(res => res.json())
+			.subscribe(
+				(data) => {
+					this.pageResult = data
+				},
+				(error) => {
+					//global error
+				}
+			)
 	}
 }
