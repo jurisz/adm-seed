@@ -11,9 +11,7 @@ import {NoContent} from "./no-content";
 import {Login} from "./login/login";
 import {AdminModule} from "./admin/admin.module";
 import {AuthGuard} from "./service/auth.gurad";
-import {UserService} from "./service";
-import {NotificationsService} from "./components/notificaton/notification.service";
-import {AppStoredState} from "./service/app.stored.state.service";
+import {UserService, AppStoredState, NotificationsService} from "./service";
 
 // App is our top level component
 

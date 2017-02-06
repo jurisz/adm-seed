@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {NotificationsService, GlobalErrorType} from "./notification.service";
+import {NotificationsService, GlobalErrorType} from "../../service";
 
 const NOTIFICATION_TIMEOUT = 4 * 1000;
 
@@ -45,13 +45,11 @@ class NotificationData {
     left:0;
     z-index: 99999;
 }	
-
 .spinner {
   top:48%;
   left: 48%;
   position:absolute;
 }
-	
 .global-error {
   margin: 0 auto;
   padding: 15px;

@@ -3,7 +3,7 @@ import {Http, Response} from "@angular/http";
 import {Observer, Observable, Subscription} from "rxjs/Rx";
 import {empty} from "rxjs/Observer";
 import {Subject} from "rxjs/Subject";
-import {NotificationsService} from "../components/notificaton/notification.service";
+import {NotificationsService} from "./notification.service";
 
 export class User {
 	constructor(public isLoggedIn: boolean, public username: String, public permissions: String[]) {
