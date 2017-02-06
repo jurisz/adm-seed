@@ -1,5 +1,5 @@
 import {Component, OnInit, EventEmitter, Input, Output} from "@angular/core";
-import {FilterDataType} from "./ng-table";
+import {FilterDataType} from "./data-table";
 
 const COMMON_OPERATIONS = ['=', '<>', 'is defined', 'not defined'];
 
@@ -37,11 +37,15 @@ const COMMON_OPERATIONS = ['=', '<>', 'is defined', 'not defined'];
   margin: 0.5rem 0 0.5rem 0;
 `]
 })
-export class NgTableFiltersPanel {
+export class DataTableFiltersPanel {
 	isFilterPanelVisible = false;
 
 	showFilterPanel(): void {
 		this.isFilterPanelVisible = true;
+	}
+
+	closePanel(): void {
+		this.isFilterPanelVisible = false;
 	}
 }
 
@@ -71,7 +75,7 @@ export class NgTableFiltersPanel {
 		}
 	`]
 })
-export class NgTableFilter implements OnInit {
+export class DataTableFilter implements OnInit {
 
 	@Input()
 	title: string;

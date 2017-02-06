@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Http} from "@angular/http";
-import {ColumnDefinition, PageResult} from "../../components/datatable/ng-table";
+import {ColumnDefinition, PageResult} from "../../components/datatable/data-table";
 
 @Component({
 	selector: 'users',

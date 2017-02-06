@@ -54,7 +54,7 @@ export class EntityPageQuery {
 }
 
 @Component({
-	selector: 'ng-table',
+	selector: 'data-table',
 	template: `
     <table class="table dataTable" role="grid">
       <thead>
@@ -80,7 +80,7 @@ export class EntityPageQuery {
     </table>
   `
 })
-export class NgTableComponent {
+export class DataTableComponent {
 
 	@Input()
 	public columns: Array<ColumnDefinition> = [];

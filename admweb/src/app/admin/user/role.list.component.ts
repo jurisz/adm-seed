@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {ColumnDefinition, PageResult} from "../../components/datatable/ng-table";
+import {ColumnDefinition, PageResult} from "../../components/datatable/data-table";
 
 @Component({
 	selector: 'roles',
@@ -7,9 +7,9 @@ import {ColumnDefinition, PageResult} from "../../components/datatable/ng-table"
     <h1>User roles</h1>
     
     <div>
-     <ng-table [pageResult]="pageResult" [columns]="columns" (openRow)="openRow($event)">
+     <data-table [pageResult]="pageResult" [columns]="columns" (openRow)="openRow($event)">
      
-	</ng-table>
+	</data-table>
     </div>
   `
 })
