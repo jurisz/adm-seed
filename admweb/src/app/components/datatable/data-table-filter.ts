@@ -1,5 +1,6 @@
-import {Component, OnInit, EventEmitter, Input, Output} from "@angular/core";
-import {FilterDataType} from "./data-table";
+import {Component, OnInit, Input} from "@angular/core";
+import {FilterDataType, Filter} from "./data-table";
+import {DataTableService} from "./data-table-service";
 
 const COMMON_OPERATIONS = ['=', '<>', 'is defined', 'not defined'];
 
@@ -7,21 +8,21 @@ const COMMON_OPERATIONS = ['=', '<>', 'is defined', 'not defined'];
 	selector: 'filters-panel',
 	template: `
 <div class="filter-buttons">
-	<button class="btn btn-primary btn-sm" type="button" (click)="showFilterPanel()"><i class="fa fa-filter "></i> Filter</button>
+	<button class="btn btn-primary btn-sm" type="button" (click)="toggleShowFilterPanel()"><i class="fa fa-filter "></i> Filter</button>
 	<button class="btn btn-info btn-sm" type="button" (click)="refreshData()"><i class="fa fa-refresh"></i> Refresh</button>
 </div>
 <div class="filter-panel" *ngIf="isFilterPanelVisible">
 	<div class="card">
 			<div class="card-block">
-   				<ng-content></ng-content>
+   				<ng-content select="filter"></ng-content>
 				<div class="pull-right" >
-					<button type="button" class="btn btn-primary btn-sm" ng-click="applyFilter()" >
+					<button type="button" class="btn btn-primary btn-sm" (click)="applyFilter()" >
 						<i class="fa fa-filter "></i> Apply
 					</button>
-					<button type="button" class="btn btn-warning btn-sm" ng-click="resetFilters()" >
+					<button type="button" class="btn btn-warning btn-sm" (click)="resetFilters()" >
 						<i class="fa fa-undo"></i> Reset
 					</button>
-					<button type="button" class="btn btn-secondary btn-sm" ng-click="closePanel()" >
+					<button type="button" class="btn btn-secondary btn-sm" (click)="closePanel()" >
 						<i class="fa fa-times"></i> Cancel
 					</button>
 				</div>   				
@@ -30,7 +31,7 @@ const COMMON_OPERATIONS = ['=', '<>', 'is defined', 'not defined'];
 </div>
 `, styles: [`
 .filter-panel {
-    width: 600px;
+    width: 640px;
     position: absolute;	
 }
 .filter-buttons {
@@ -40,13 +41,14 @@ const COMMON_OPERATIONS = ['=', '<>', 'is defined', 'not defined'];
 export class DataTableFiltersPanel {
 	isFilterPanelVisible = false;
 
-	showFilterPanel(): void {
-		this.isFilterPanelVisible = true;
+	toggleShowFilterPanel(): void {
+		this.isFilterPanelVisible = !this.isFilterPanelVisible;
 	}
 
 	closePanel(): void {
 		this.isFilterPanelVisible = false;
 	}
+
 }
 
 @Component({
@@ -54,26 +56,34 @@ export class DataTableFiltersPanel {
 	template: `
 <div class="row filter-row">
 	<div class="col-3">{{title}}</div>
-	<div class="col-2 dropdown">
-		<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			-----
-		</button>
-		<div class="dropdown-menu">
-			<a class="dropdown-item" href="#" (click)='bla()'>&nbsp;</a>
-			<a class="dropdown-item" href="#" (click)="bla(operation)" *ngFor="let operation of availableOperations">{{operation}}</a>
-		</div>
+	<div class="col-3">
+		<select class="custom-select form-control-sm" (change)="filterOperationSelected($event.target.value)">
+		  <option value="">---</option>
+	  	  <option *ngFor="let op of availableOperations" [value]="op" [selected]="op==filter.filterOperation">{{op}}</option>
+		</select>
 	</div>
-	<div class="col-7">
-		<input type="text" class="form-control form-control-sm" popover="" popover-trigger="focus" popover-placement="top">
+	<div class="col-6 form-inline form-group">
+		<input type="text" class="form-control form-control-sm filter-value" popover="" popover-trigger="focus" popover-placement="top" 
+		[name]="filterValueFieldName1" [(ngModel)]="filter.filterValue1" [hidden]="hideFilterValue1" [ngClass]="{'error': hasErrorFilterValue1()}">
+		<input type="text" class="form-control form-control-sm filter-value" popover="" popover-trigger="focus" popover-placement="top" 
+		[name]="filterValueFieldName2" [(ngModel)]="filter.filterValue2" [hidden]="hideFilterValue2" [ngClass]="{'error': hasErrorFilterValue2()}">
 	</div>
 </div>
-  `, styles: [`
-		.filter-row {
-			padding-bottom: 2px;
-			border-bottom: 1px solid rgba(0, 0, 0, .125);
-			margin-bottom: 0.5rem;
-		}
-	`]
+  `,
+	styles: [`
+	.filter-row {
+		padding-bottom: 2px;
+		border-bottom: 1px solid rgba(0, 0, 0, .125);
+		margin-bottom: 0.5rem;
+	}
+	.filter-value {
+		width: 135px;
+		margin-right: 5px;
+	}
+	.error {
+		border-color: #d9534f; 
+	}
+`]
 })
 export class DataTableFilter implements OnInit {
 
@@ -86,21 +96,49 @@ export class DataTableFilter implements OnInit {
 	@Input()
 	type: FilterDataType;
 
-	operation: string;
-	value1: string;
-	value2: string;
+	private filter: Filter;
+
+	private hideFilterValue1 = true;
+	private hideFilterValue2 = true;
+	private filterStored = false;
 	availableOperations: string[];
-	errorMessage: string;
 
-
-	@Output() onVoted = new EventEmitter<boolean>();
-
-	vote(agreed: boolean) {
-		this.onVoted.emit(agreed);
+	constructor(private dataTableService: DataTableService) {
 	}
 
 	ngOnInit(): void {
 		this.buildAvailableOperations();
+		this.filter = this.loadAppStoredFilter();
+
+		if (!this.filter) {
+			this.filter = new Filter(this.property, this.type);
+		} else {
+			this.filterStored = true;
+			if (this.filter.filterOperation) {
+				this.filterOperationSelected(this.filter.filterOperation);
+			}
+		}
+	}
+
+	private loadAppStoredFilter(): Filter {
+		let storedQuery = this.dataTableService.readEntityPageQuery();
+		if (storedQuery) {
+			return storedQuery.filters.find(filter => filter.propertyName == this.property);
+		}
+		return undefined;
+	}
+
+	private storeNewFilter(): void {
+		let storedQuery = this.dataTableService.readEntityPageQuery();
+		storedQuery.filters.push(this.filter);
+	}
+
+	private removeStoredFilter(): void {
+		let storedQuery = this.dataTableService.readEntityPageQuery();
+		let filterIndex = storedQuery.filters.findIndex(filter => filter.propertyName == this.property);
+		if (filterIndex > -1) {
+			storedQuery.filters.splice(filterIndex, 1);
+		}
 	}
 
 	private buildAvailableOperations(): void {
@@ -120,27 +158,53 @@ export class DataTableFilter implements OnInit {
 		}
 	}
 
-	public isValid(): boolean {
-		if (this.operation) {
-			let parametersCount = 0;
-			if (['is defined', 'not defined', 'empty'].indexOf(this.operation) > -1) {
-				parametersCount = 0;
-			} else if (['=', '<>', '>', '>=', '<', '<=', 'starts with', 'contains', 'not contains', '>'].indexOf(this.operation) > -1) {
-				parametersCount = 1;
-			} else if ('between' == this.operation) {
-				parametersCount = 2;
-			}
-
-			if (parametersCount == 1 && !this.value1) {
-				this.errorMessage = 'One parameter is mandatory';
-				return false;
-			}
-
-			if (parametersCount == 2 && !this.value1 && !this.value2) {
-				this.errorMessage = '2 parameters are required';
-				return false;
-			}
+	private getRequiredParametersCount(operation: string): number {
+		if (['=', '<>', '>', '>=', '<', '<=', 'starts with', 'contain', 'not contain', '>'].indexOf(operation) > -1) {
+			return 1;
+		} else if ('between' == operation) {
+			return 2;
 		}
+		return 0;
+	}
+
+	filterOperationSelected(operation: string) {
+		if (operation) {
+			this.filter.filterOperation = operation;
+		} else {
+			this.filter.filterOperation = undefined;
+			this.filter.filterValue1 = undefined;
+			this.filter.filterValue2 = undefined;
+		}
+
+		let paramsCount = this.getRequiredParametersCount(operation);
+		switch (paramsCount) {
+			case 0:
+				this.hideFilterValue1 = true;
+				this.hideFilterValue2 = true;
+				break;
+			case 1:
+				this.hideFilterValue1 = false;
+				this.hideFilterValue2 = true;
+				break;
+			case 2:
+				this.hideFilterValue1 = false;
+				this.hideFilterValue2 = false;
+				break;
+		}
+
+		if (this.filterStored && !this.filter.filterOperation) {
+			this.removeStoredFilter();
+		} else if (!this.filterStored && this.filter.filterOperation) {
+			this.storeNewFilter();
+		}
+	}
+
+	hasErrorFilterValue1(): boolean {
+		return !this.hideFilterValue1 && !this.filter.filterValue1;
+	}
+
+	hasErrorFilterValue2(): boolean {
+		return !this.hideFilterValue2 && !this.filter.filterValue2;
 	}
 }
 

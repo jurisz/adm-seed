@@ -1,5 +1,6 @@
-import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output, OnInit} from "@angular/core";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+import {DataTableService} from "./data-table-service";
 
 /**
  Modified version of
@@ -36,9 +37,9 @@ export class PageResult {
 export type FilterDataType = 'INTEGER' | 'LONG' | 'STRING' | 'BIG_DECIMAL' | 'BOOLEAN' | 'ENUM' | 'LOCAL_DATE' | 'LOCAL_DATE_TIME';
 
 export class Filter {
-	propertyName: string;
+	constructor(public propertyName: string, public parameterValueType: FilterDataType) {
+	};
 	filterOperation: string;
-	parameterValueType: FilterDataType;
 	filterValue1: string;
 	filterValue2: string;
 }
@@ -56,6 +57,7 @@ export class EntityPageQuery {
 @Component({
 	selector: 'data-table',
 	template: `
+	<ng-content select="filters-panel"></ng-content>
     <table class="table dataTable" role="grid">
       <thead>
         <tr role="row">
@@ -78,9 +80,10 @@ export class EntityPageQuery {
       			[boundaryLinks]="true" [totalItems]="pageResult.totalRecords"  [(ngModel)]="currentPage" 
                 itemsPerPage="20" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"></pagination>
     </table>
-  `
+  `,
+	providers: [DataTableService]
 })
-export class DataTableComponent {
+export class DataTableComponent implements OnInit {
 
 	@Input()
 	public columns: Array<ColumnDefinition> = [];
@@ -91,17 +94,33 @@ export class DataTableComponent {
 	@Input()
 	public pageResult: PageResult = PageResult.empty();
 
-	// Outputs (Events)
-	@Output() public tableSorting: EventEmitter<ColumnDefinition> = new EventEmitter();
-	@Output() public openRow: EventEmitter<any> = new EventEmitter();
+	@Output()
+	public tableSorting: EventEmitter<ColumnDefinition> = new EventEmitter();
 
-	public constructor(private sanitizer: DomSanitizer) {
+	@Output()
+	public openRow: EventEmitter<any> = new EventEmitter();
+
+	private entityPageQuery: EntityPageQuery;
+
+	public constructor(private sanitizer: DomSanitizer, private dataTableService: DataTableService) {
 	}
 
 	public sanitize(html: string): SafeHtml {
 		return this.sanitizer.bypassSecurityTrustHtml(html);
 	}
 
+	ngOnInit(): void {
+		this.storeEntityQueryIfNotExists();
+	}
+
+	private storeEntityQueryIfNotExists() {
+		let storedQuery = this.dataTableService.readEntityPageQuery();
+		if (!storedQuery) {
+			this.entityPageQuery = new EntityPageQuery();
+			this.dataTableService.storeEntityPageQuery(this.entityPageQuery);
+		}
+	}
+	
 	public sortBy(column: ColumnDefinition): boolean {
 		for (let col of this.columns) {
 			if (col.propertyName == column.propertyName) {
