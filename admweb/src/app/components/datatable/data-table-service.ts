@@ -10,6 +10,9 @@ export class DataTableService {
 
 	private filtersResetSender = new Subject<void>();
 	filtersResetSender$ = this.filtersResetSender.asObservable();
+
+	private loadDataSender = new Subject<void>();
+	loadDataSender$ = this.loadDataSender.asObservable();
 	
 	constructor(private appStoredState: AppStoredState) {
 	}
@@ -26,5 +29,9 @@ export class DataTableService {
 
 	public resetAllPageFilters() {
 		this.filtersResetSender.next();
+	}
+
+	loadPageData() {
+		this.loadDataSender.next();
 	}
 }

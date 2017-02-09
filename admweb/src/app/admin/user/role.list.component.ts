@@ -1,5 +1,5 @@
-import {Component, OnInit} from "@angular/core";
-import {ColumnDefinition, PageResult} from "../../components/datatable/data-table";
+import {Component} from "@angular/core";
+import {ColumnDefinition} from "../../components/datatable/data-table";
 
 @Component({
 	selector: 'roles',
@@ -7,42 +7,24 @@ import {ColumnDefinition, PageResult} from "../../components/datatable/data-tabl
     <h1>User roles</h1>
     
     <div>
-     <data-table [pageResult]="pageResult" [columns]="columns" (openRow)="openRow($event)">
+     <data-table [apiUrl]="apiUrl" [columns]="columns" (openRow)="openRow($event)">
 		<filters-panel>
-			<filter title="name" property="=name" type="STRING"></filter>
+			<filter title="id" property="id" type="LONG"></filter>
+			<filter title="name" property="name" type="STRING"></filter>
 		</filters-panel>     
 	</data-table>
     </div>
   `
 })
-export class Roles implements OnInit {
-
-	pageResult: PageResult = {
-		page: 1,
-		totalRecords: 3,
-		results: [
-			{name: 'Austin', gender: 'Male', company: 'Swimlane'},
-			{name: 'Dany', gender: 'Male', company: 'KFC'},
-			{name: 'Molly', gender: 'Female', company: 'Burger King'},
-		]
-	};
+export class Roles {
 
 	columns: Array<ColumnDefinition> = [
-		ColumnDefinition.define('name'),
-		ColumnDefinition.define('gender', false),
-		ColumnDefinition.define('company'),
+		ColumnDefinition.define('id'),
+		ColumnDefinition.define('name')
 	];
 
-	constructor() {
-	}
-
-	ngOnInit() {
-	}
-
-	public loadPageData() {
-
-	}
-
+	apiUrl = '/api/admin/security/user-role/list';
+	
 	public openRow(item) {
 		console.log('openRow')
 		console.log(item)

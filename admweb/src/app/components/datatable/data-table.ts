@@ -1,7 +1,8 @@
 import {Component, EventEmitter, Input, Output, OnInit} from "@angular/core";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
-import {DataTableService} from "./data-table-service";
 import {Http} from "@angular/http";
+import {NotificationsService} from "../../service";
+import {DataTableService} from "./data-table-service";
 
 /**
  Modified version of
@@ -40,6 +41,7 @@ export type FilterDataType = 'INTEGER' | 'LONG' | 'STRING' | 'BIG_DECIMAL' | 'BO
 export class Filter {
 	constructor(public propertyName: string, public parameterValueType: FilterDataType) {
 	};
+
 	filterOperation: string;
 	filterValue1: string;
 	filterValue2: string;
@@ -94,7 +96,7 @@ export class DataTableComponent implements OnInit {
 
 	@Input()
 	public apiUrl: string;
-	
+
 	@Input()
 	public pageResult: PageResult = PageResult.empty();
 
@@ -106,7 +108,10 @@ export class DataTableComponent implements OnInit {
 
 	private entityPageQuery: EntityPageQuery;
 
-	public constructor(private sanitizer: DomSanitizer, private http: Http, private dataTableService: DataTableService) {
+	public constructor(private sanitizer: DomSanitizer,
+					   private http: Http,
+					   private dataTableService: DataTableService,
+					   private notificationsService: NotificationsService) {
 	}
 
 	public sanitize(html: string): SafeHtml {
@@ -118,6 +123,8 @@ export class DataTableComponent implements OnInit {
 		if (this.apiUrl) {
 			this.loadPageData();
 		}
+
+		this.dataTableService.loadDataSender$.subscribe(() => this.loadPageData());
 	}
 
 	private storeEntityQueryIfNotExists() {
@@ -129,7 +136,7 @@ export class DataTableComponent implements OnInit {
 			this.entityPageQuery = storedQuery;
 		}
 	}
-	
+
 	public sortBy(column: ColumnDefinition): boolean {
 		for (let col of this.columns) {
 			if (col.propertyName == column.propertyName) {
@@ -151,13 +158,16 @@ export class DataTableComponent implements OnInit {
 	}
 
 	private loadPageData() {
+		this.notificationsService.showOverlay();
 		this.http.post(this.apiUrl, this.entityPageQuery)
 			.map(res => res.json())
 			.subscribe(
 				(data) => {
+					this.notificationsService.hideOverlay();
 					this.pageResult = data
 				},
 				(error) => {
+					this.notificationsService.hideOverlay();
 					//global error
 				}
 			)

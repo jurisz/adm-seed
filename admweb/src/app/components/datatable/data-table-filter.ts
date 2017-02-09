@@ -57,11 +57,12 @@ export class DataTableFiltersPanel {
 	}
 
 	applyFilter(): void {
-
+		this.dataTableService.loadPageData();
+		this.closePanel();
 	}
 
 	refreshData(): void {
-
+		this.dataTableService.loadPageData();
 	}
 	
 }
