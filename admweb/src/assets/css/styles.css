@@ -10,6 +10,10 @@ table.dataTable thead tr {
 	background: #E7E7E7;
 }
 
+.table td, .table th {
+	padding: .3rem;
+} 
+
 .aw-fa-sm {
 	font-size: 0.5rem;
 }

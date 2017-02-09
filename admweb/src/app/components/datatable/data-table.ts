@@ -172,4 +172,14 @@ export class DataTableComponent implements OnInit {
 				}
 			)
 	}
+
+	set currentPage(val: number) {
+		this.entityPageQuery.page = val;
+		this.loadPageData();
+	}
+
+	get currentPage() {
+		return this.entityPageQuery.page;
+	}
+	
 }
