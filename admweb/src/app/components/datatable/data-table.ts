@@ -120,6 +120,10 @@ export class DataTableComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.storeEntityQueryIfNotExists();
+		if (this.pageSize) {
+			this.entityPageQuery.pageSize = this.pageSize
+		}
+		
 		if (this.apiUrl) {
 			this.loadPageData();
 		}
