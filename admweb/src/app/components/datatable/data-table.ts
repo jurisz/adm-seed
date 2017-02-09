@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, Output, OnInit} from "@angular/core";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {DataTableService} from "./data-table-service";
+import {Http} from "@angular/http";
 
 /**
  Modified version of
@@ -92,6 +93,9 @@ export class DataTableComponent implements OnInit {
 	public pageSize: number;
 
 	@Input()
+	public apiUrl: string;
+	
+	@Input()
 	public pageResult: PageResult = PageResult.empty();
 
 	@Output()
@@ -102,7 +106,7 @@ export class DataTableComponent implements OnInit {
 
 	private entityPageQuery: EntityPageQuery;
 
-	public constructor(private sanitizer: DomSanitizer, private dataTableService: DataTableService) {
+	public constructor(private sanitizer: DomSanitizer, private http: Http, private dataTableService: DataTableService) {
 	}
 
 	public sanitize(html: string): SafeHtml {
@@ -111,6 +115,9 @@ export class DataTableComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.storeEntityQueryIfNotExists();
+		if (this.apiUrl) {
+			this.loadPageData();
+		}
 	}
 
 	private storeEntityQueryIfNotExists() {
@@ -118,6 +125,8 @@ export class DataTableComponent implements OnInit {
 		if (!storedQuery) {
 			this.entityPageQuery = new EntityPageQuery();
 			this.dataTableService.storeEntityPageQuery(this.entityPageQuery);
+		} else {
+			this.entityPageQuery = storedQuery;
 		}
 	}
 	
@@ -139,5 +148,18 @@ export class DataTableComponent implements OnInit {
 
 	public dblclickOnRow(item: any): void {
 		this.openRow.emit(item);
+	}
+
+	private loadPageData() {
+		this.http.post(this.apiUrl, this.entityPageQuery)
+			.map(res => res.json())
+			.subscribe(
+				(data) => {
+					this.pageResult = data
+				},
+				(error) => {
+					//global error
+				}
+			)
 	}
 }

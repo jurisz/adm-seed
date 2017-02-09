@@ -41,6 +41,9 @@ const COMMON_OPERATIONS = ['=', '<>', 'is defined', 'not defined'];
 export class DataTableFiltersPanel {
 	isFilterPanelVisible = false;
 
+	constructor(private dataTableService: DataTableService) {
+	}
+
 	toggleShowFilterPanel(): void {
 		this.isFilterPanelVisible = !this.isFilterPanelVisible;
 	}
@@ -49,6 +52,18 @@ export class DataTableFiltersPanel {
 		this.isFilterPanelVisible = false;
 	}
 
+	resetFilters(): void {
+		this.dataTableService.resetAllPageFilters();
+	}
+
+	applyFilter(): void {
+
+	}
+
+	refreshData(): void {
+
+	}
+	
 }
 
 @Component({
@@ -118,6 +133,10 @@ export class DataTableFilter implements OnInit {
 				this.filterOperationSelected(this.filter.filterOperation);
 			}
 		}
+
+		this.dataTableService.filtersResetSender$.subscribe(
+			() => this.filterOperationSelected('')
+		)
 	}
 
 	private loadAppStoredFilter(): Filter {
@@ -131,6 +150,7 @@ export class DataTableFilter implements OnInit {
 	private storeNewFilter(): void {
 		let storedQuery = this.dataTableService.readEntityPageQuery();
 		storedQuery.filters.push(this.filter);
+		this.filterStored = true;
 	}
 
 	private removeStoredFilter(): void {
@@ -139,6 +159,7 @@ export class DataTableFilter implements OnInit {
 		if (filterIndex > -1) {
 			storedQuery.filters.splice(filterIndex, 1);
 		}
+		this.filterStored = false;
 	}
 
 	private buildAvailableOperations(): void {

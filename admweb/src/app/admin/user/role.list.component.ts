@@ -8,7 +8,9 @@ import {ColumnDefinition, PageResult} from "../../components/datatable/data-tabl
     
     <div>
      <data-table [pageResult]="pageResult" [columns]="columns" (openRow)="openRow($event)">
-     
+		<filters-panel>
+			<filter title="name" property="=name" type="STRING"></filter>
+		</filters-panel>     
 	</data-table>
     </div>
   `

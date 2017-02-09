@@ -1,8 +1,8 @@
 <div>
-	<data-table [pageResult]="pageResult" [columns]="columns">
+	<data-table [columns]="columns" [apiUrl]="apiUrl">
 		<filters-panel>
-			<filter title="Id" property="=id" type="LONG"></filter>
-			<filter title="User name" property="=username" type="STRING"></filter>
+			<filter title="Id" property="id" type="LONG"></filter>
+			<filter title="User name" property="username" type="STRING"></filter>
 		</filters-panel>
 	</data-table>
 </div>
