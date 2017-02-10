@@ -11,12 +11,12 @@ import {DataTableService} from "./data-table-service";
  **/
 
 export class ColumnDefinition {
-	propertyName: String;
-	title: String = this.propertyName;
+	propertyName: string;
+	title: string = this.propertyName;
 	sortingEnabled: boolean = false;
-	sort: String = '';
+	sort: string = '';
 
-	static define(propertyName: String, sortingEnabled: boolean = true, title: String = propertyName): ColumnDefinition {
+	static define(propertyName: string, sortingEnabled: boolean = true, title: string = propertyName): ColumnDefinition {
 		return {
 			propertyName: propertyName,
 			title: title,
@@ -68,7 +68,7 @@ export class EntityPageQuery {
 		{{column.title}}
 		<a *ngIf="column.sortingEnabled" (click)="sortBy(column)" href="#">
 		  <i class="fa aw-fa-sm"
-		  [ngClass]="{'fa-chevron-right': column.sort === '', 'fa-chevron-down': column.sort === 'desc', 'fa-chevron-up': column.sort === 'asc'}"> </i>
+		  [ngClass]="{'fa-chevron-right': column.sort === '', 'fa-chevron-down': column.sort === 'DESC', 'fa-chevron-up': column.sort === 'ASC'}"> </i>
 		</a>  
 	  </th>
 	</tr>
@@ -80,7 +80,7 @@ export class EntityPageQuery {
   </tbody>
 </table>
 <div class="d-flex">
-	<div class="p-2"> {{pageResult.totalRecords}} records</div>
+	<div class="p-2"> <b>{{pageResult.totalRecords}}</b> records; page: <b>{{currentPage}}</b></div>
 	<div class="data-table-pagination">
 		<pagination *ngIf="pageResult.totalRecords > entityPageQuery.pageSize"  [totalItems]="pageResult.totalRecords"  [(ngModel)]="currentPage" 
 			itemsPerPage="20" [boundaryLinks]="true" [maxSize]="5" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"></pagination>
@@ -108,15 +108,12 @@ export class DataTableComponent implements OnInit {
 	@Input()
 	public pageResult: PageResult = PageResult.empty();
 
+	private entityPageQuery: EntityPageQuery;
+	
 	public newPageNumber: number;
 
 	@Output()
-	public tableSorting: EventEmitter<ColumnDefinition> = new EventEmitter();
-
-	@Output()
 	public openRow: EventEmitter<any> = new EventEmitter();
-
-	private entityPageQuery: EntityPageQuery;
 
 	public constructor(private sanitizer: DomSanitizer,
 					   private http: Http,
@@ -160,7 +157,8 @@ export class DataTableComponent implements OnInit {
 				col.sort = '';
 			}
 		}
-		this.tableSorting.emit(column);
+		this.entityPageQuery.sortOption = {propertyName: column.propertyName, direction: column.sort};
+		this.currentPage = 1; 
 		return false;
 	}
 
