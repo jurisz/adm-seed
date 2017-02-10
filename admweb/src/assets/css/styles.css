@@ -17,3 +17,7 @@ table.dataTable thead tr {
 .aw-fa-sm {
 	font-size: 0.5rem;
 }
+
+.data-table-pagination ul {
+	margin-bottom: 0;
+}

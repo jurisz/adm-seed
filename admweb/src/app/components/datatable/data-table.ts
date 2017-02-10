@@ -60,29 +60,37 @@ export class EntityPageQuery {
 @Component({
 	selector: 'data-table',
 	template: `
-	<ng-content select="filters-panel"></ng-content>
-    <table class="table dataTable" role="grid">
-      <thead>
-        <tr role="row">
-          <th *ngFor="let column of columns"  >
-            {{column.title}}
-            <a *ngIf="column.sortingEnabled" (click)="sortBy(column)" href="#">
-			  <i class="fa aw-fa-sm"
-			  [ngClass]="{'fa-chevron-right': column.sort === '', 'fa-chevron-down': column.sort === 'desc', 'fa-chevron-up': column.sort === 'asc'}"> </i>
-            </a>  
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of pageResult.results" (dblclick)="dblclickOnRow(item)">
-          <td *ngFor="let column of columns" [innerHtml]="sanitize(getData(item, column.propertyName))"></td>
-        </tr>
-      </tbody>
-      
-      <pagination *ngIf="pageResult.totalRecords > 20"
-      			[boundaryLinks]="true" [totalItems]="pageResult.totalRecords"  [(ngModel)]="currentPage" 
-                itemsPerPage="20" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"></pagination>
-    </table>
+<ng-content select="filters-panel"></ng-content>
+<table class="table dataTable" role="grid">
+  <thead>
+	<tr role="row">
+	  <th *ngFor="let column of columns"  >
+		{{column.title}}
+		<a *ngIf="column.sortingEnabled" (click)="sortBy(column)" href="#">
+		  <i class="fa aw-fa-sm"
+		  [ngClass]="{'fa-chevron-right': column.sort === '', 'fa-chevron-down': column.sort === 'desc', 'fa-chevron-up': column.sort === 'asc'}"> </i>
+		</a>  
+	  </th>
+	</tr>
+  </thead>
+  <tbody>
+	<tr *ngFor="let item of pageResult.results" (dblclick)="dblclickOnRow(item)">
+	  <td *ngFor="let column of columns" [innerHtml]="sanitize(getData(item, column.propertyName))"></td>
+	</tr>
+  </tbody>
+</table>
+<div class="d-flex">
+	<div class="p-2"> {{pageResult.totalRecords}} records</div>
+	<div class="data-table-pagination">
+		<pagination *ngIf="pageResult.totalRecords > entityPageQuery.pageSize"  [totalItems]="pageResult.totalRecords"  [(ngModel)]="currentPage" 
+			itemsPerPage="20" [boundaryLinks]="true" [maxSize]="5" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"></pagination>
+	</div>
+	<div class="p-2 form-inline" *ngIf="pageResult.totalRecords > entityPageQuery.pageSize">
+		<input type="text" style="width:50px;" class="form-control form-control-sm" [(ngModel)]="newPageNumber">
+		&nbsp;
+		<button [hidden]="newPageNumber == currentPage" (click)="goToNewPage()" class="btn btn-info btn-sm" type="button">Set page</button>
+	</div>	        
+</div>          
   `,
 	providers: [DataTableService]
 })
@@ -99,6 +107,8 @@ export class DataTableComponent implements OnInit {
 
 	@Input()
 	public pageResult: PageResult = PageResult.empty();
+
+	public newPageNumber: number;
 
 	@Output()
 	public tableSorting: EventEmitter<ColumnDefinition> = new EventEmitter();
@@ -123,7 +133,8 @@ export class DataTableComponent implements OnInit {
 		if (this.pageSize) {
 			this.entityPageQuery.pageSize = this.pageSize
 		}
-		
+		this.newPageNumber = this.entityPageQuery.page;
+
 		if (this.apiUrl) {
 			this.loadPageData();
 		}
@@ -180,10 +191,14 @@ export class DataTableComponent implements OnInit {
 	set currentPage(val: number) {
 		this.entityPageQuery.page = val;
 		this.loadPageData();
+		this.newPageNumber = val;
 	}
 
-	get currentPage() {
+	get currentPage(): number {
 		return this.entityPageQuery.page;
 	}
-	
+
+	goToNewPage() {
+		this.currentPage = this.newPageNumber;
+	}
 }
