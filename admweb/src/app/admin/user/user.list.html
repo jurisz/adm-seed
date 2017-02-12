@@ -1,5 +1,5 @@
 <div>
-	<data-table [columns]="columns" [apiUrl]="apiUrl">
+	<data-table [columns]="columns" [apiUrl]="apiUrl" (itemAction)="doItemAction($event)">
 		<filters-panel>
 			<filter title="Id" property="id" type="LONG"></filter>
 			<filter title="User name" property="username" type="STRING"></filter>

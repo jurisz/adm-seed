@@ -15,14 +15,23 @@ export class ColumnDefinition {
 	title: string = this.propertyName;
 	sortingEnabled: boolean = false;
 	sort: string = '';
+	width: string;
+	linkText: string;
+	linkAction: string;
+	linkUrl: string = '#';
 
 	static define(propertyName: string, sortingEnabled: boolean = true, title: string = propertyName): ColumnDefinition {
-		return {
-			propertyName: propertyName,
-			title: title,
-			sortingEnabled: sortingEnabled,
-			sort: ''
-		}
+		let column = new ColumnDefinition();
+		column.propertyName = propertyName;
+		column.title = title;
+		column.sortingEnabled = sortingEnabled;
+		return column;
+	}
+
+	static defineLink(linkText: string): ColumnDefinition {
+		let column = new ColumnDefinition();
+		column.linkText = linkText;
+		return column;
 	}
 }
 
@@ -57,6 +66,11 @@ export class EntityPageQuery {
 	filters: Filter[] = [];
 }
 
+export class ItemAction {
+	action: string;
+	item: any;
+}
+
 @Component({
 	selector: 'data-table',
 	template: `
@@ -64,7 +78,7 @@ export class EntityPageQuery {
 <table class="table dataTable" role="grid">
   <thead>
 	<tr role="row">
-	  <th *ngFor="let column of columns"  >
+	  <th *ngFor="let column of columns"  [ngStyle]="getColumnWidth(column)">
 		{{column.title}}
 		<a *ngIf="column.sortingEnabled" (click)="sortBy(column)" href="#">
 		  <i class="fa aw-fa-sm"
@@ -75,7 +89,12 @@ export class EntityPageQuery {
   </thead>
   <tbody>
 	<tr *ngFor="let item of pageResult.results" (dblclick)="dblclickOnRow(item)">
-	  <td *ngFor="let column of columns" [innerHtml]="sanitize(getData(item, column.propertyName))"></td>
+	  <ng-container *ngFor="let column of columns">	
+	  	<td [innerHtml]="sanitize(getData(item, column.propertyName))" *ngIf="!column.linkText"></td>
+	  	<td *ngIf="column.linkText" >
+			<a [href]="getColumnLinkUrl(column, item)" (click)="doColumnClickAction(column, item)">{{column.linkText}}</a>
+		</td>
+	  </ng-container>
 	</tr>
   </tbody>
 </table>
@@ -109,11 +128,14 @@ export class DataTableComponent implements OnInit {
 	public pageResult: PageResult = PageResult.empty();
 
 	private entityPageQuery: EntityPageQuery;
-	
+
 	public newPageNumber: number;
 
 	@Output()
 	public openRow: EventEmitter<any> = new EventEmitter();
+
+	@Output()
+	public itemAction: EventEmitter<ItemAction> = new EventEmitter();
 
 	public constructor(private sanitizer: DomSanitizer,
 					   private http: Http,
@@ -158,7 +180,7 @@ export class DataTableComponent implements OnInit {
 			}
 		}
 		this.entityPageQuery.sortOption = {propertyName: column.propertyName, direction: column.sort};
-		this.currentPage = 1; 
+		this.currentPage = 1;
 		return false;
 	}
 
@@ -198,5 +220,21 @@ export class DataTableComponent implements OnInit {
 
 	goToNewPage() {
 		this.currentPage = this.newPageNumber;
+	}
+
+	getColumnWidth(col: ColumnDefinition) {
+		return col.width ? {'width': col.width} : {};
+	}
+
+	getColumnLinkUrl(column: ColumnDefinition, item: any) {
+		let propValue = this.getData(item, column.propertyName);
+		return column.linkUrl.replace('{{' + column.propertyName + '}}', propValue)
+	}
+
+	doColumnClickAction(column: ColumnDefinition, item: any) {
+		if (column.linkAction) {
+			this.itemAction.emit({action: column.linkAction, item: item});
+			return false;
+		}
 	}
 }
