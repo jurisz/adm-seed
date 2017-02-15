@@ -5,8 +5,8 @@ import {Roles} from "./role.list.component";
 import {Role} from "./role.edit.component";
 
 export const USER_MODULE_ROUTES: Route[] = [
-	{path: 'users', component: Users},
+	{path: 'users', component: Users, data: {title: 'Users'}},
 	{path: 'user/:id', component: User},
-	{path: 'user-roles', component: Roles},
+	{path: 'user-roles', component: Roles, data: {title: 'User roles'}},
 	{path: 'user-role/:id:', component: Role},
 ];

@@ -8,7 +8,7 @@ import {USER_MODULE_ROUTES} from "./user/user.routes";
 const GENERAL_ADMIN_ROUTES: Route[] = [
 	{path: '', redirectTo: 'home', pathMatch: 'full'},
 	{path: 'home', component: AdminHomePage},
-	{path: 'about', component: About}
+	{path: 'about', component: About, data: {title: 'About'}}
 ];
 
 export const ROUTES: Routes = [
