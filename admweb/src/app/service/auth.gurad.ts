@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate {
 			return true;
 		}
 
-		let protectedUrl: String = location.pathname;
+		let protectedUrl: String = location.hash;
 		this.router.navigate(['/login', {nextUrl: protectedUrl}]);
 		return false;
 	}

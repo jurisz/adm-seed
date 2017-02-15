@@ -158,7 +158,10 @@ export class DataTableComponent implements OnInit {
 			this.loadPageData();
 		}
 
-		this.dataTableService.loadDataSender$.subscribe(() => this.loadPageData());
+		this.dataTableService.loadDataSender$.subscribe(() => {
+			this.entityPageQuery.page = 1;
+			this.loadPageData()
+		});
 	}
 
 	private storeEntityQueryIfNotExists() {

@@ -74,7 +74,7 @@ export class OpenViewTabsComponent implements OnInit {
 				activationId: this.viewActivateCounter,
 				active: true,
 				title: viewTitle,
-				url: location.pathname
+				url: location.hash
 			});
 		}
 	}

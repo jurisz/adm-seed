@@ -14,7 +14,7 @@ export class Users {
 		editCol.width = '60px';
 
 		let deleteCol = ColumnDefinition.defineLink('Delete');
-		deleteCol.linkUrl = '/admin/user/{{id}}/delete';
+		deleteCol.linkUrl = '#/admin/user/{{id}}/delete';
 		deleteCol.propertyName = 'id';
 		deleteCol.width = '60px';
 

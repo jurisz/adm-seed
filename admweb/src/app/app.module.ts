@@ -30,14 +30,14 @@ const APP_PROVIDERS = [
 		Login,
 		NoContent
 	],
-	imports: [ 
+	imports: [
 		BrowserModule,
 		FormsModule,
 		HttpModule,
-		RouterModule.forRoot(ROUTES),
+		RouterModule.forRoot(ROUTES, {useHash: true}),
 		AdminModule
 	],
-	providers: [ 
+	providers: [
 		ENV_PROVIDERS,
 		APP_PROVIDERS
 	]

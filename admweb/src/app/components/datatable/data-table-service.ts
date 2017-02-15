@@ -18,12 +18,12 @@ export class DataTableService {
 	}
 
 	public storeEntityPageQuery(query: EntityPageQuery): void {
-		let storeKey = window.location.pathname + QUERY_KEY;
+		let storeKey = window.location.hash + QUERY_KEY;
 		this.appStoredState.store(storeKey, query);
 	}
 
 	public readEntityPageQuery(): EntityPageQuery {
-		let storeKey = window.location.pathname + QUERY_KEY;
+		let storeKey = window.location.hash + QUERY_KEY;
 		return this.appStoredState.get(storeKey);
 	}
 
