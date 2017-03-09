@@ -11,7 +11,7 @@ import {NoContent} from "./no-content";
 import {Login} from "./login/login";
 import {AdminModule} from "./admin/admin.module";
 import {AuthGuard} from "./service/auth.gurad";
-import {UserService, AppStoredState, NotificationsService} from "./service";
+import {UserService, AppStoredState, NotificationsService, CommonDialogsService} from "./service";
 
 // App is our top level component
 
@@ -20,7 +20,8 @@ const APP_PROVIDERS = [
 	AppStoredState,
 	AuthGuard,
 	UserService,
-	NotificationsService
+	NotificationsService,
+	CommonDialogsService
 ];
 
 @NgModule({
@@ -62,7 +63,7 @@ export class AppModule {
 
 	hmrAfterDestroy(store) {
 		// display new elements
-		store.disposeOldHosts()
+		store.disposeOldHosts();
 		delete store.disposeOldHosts;
 	}
 }
