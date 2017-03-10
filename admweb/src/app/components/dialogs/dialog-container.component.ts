@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver} from "@angular/core";
-import {ErrorDialog, ErrorDialogData} from "./error.dialog";
+import {ErrorDialog} from "./error.dialog";
 import {CommonDialogsService} from "../../service/dialogs.service";
 import {Response} from "@angular/http";
 
@@ -24,20 +24,6 @@ export class DialogContainer implements OnInit {
 	}
 
 	public showErrorDialog(errorData: Response | any): void {
-		let errorDialogData: ErrorDialogData;
-
-		if (errorData instanceof Response) {
-			let httpError = <Response> errorData;
-			errorDialogData = {
-				errorMessage: httpError.status + " " + httpError.statusText,
-				fullErrorText: httpError.text()
-			}
-		} else {
-			errorDialogData = {
-				errorMessage: errorData,
-				fullErrorText: undefined
-			}
-		}
 
 		if (this.currentDialog) {
 			this.currentDialog.destroy();
@@ -47,6 +33,6 @@ export class DialogContainer implements OnInit {
 		let dialog = this.dialogContainer.createComponent(factory);
 
 		this.currentDialog = dialog;
-		dialog.instance.showErrorDialog(errorDialogData);
+		dialog.instance.showErrorDialog(errorData);
 	}
 }

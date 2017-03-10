@@ -3,12 +3,13 @@ import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {Http} from "@angular/http";
 import {NotificationsService} from "../../service";
 import {DataTableService} from "./data-table-service";
+import {CommonDialogsService} from "../../service/dialogs.service";
 
 /**
- Modified version of
- https://github.com/valor-software/ng2-table/
- using only server data in filter, sorting, paging etc
- **/
+	Modified version of
+	https://github.com/valor-software/ng2-table/
+	using only server data in filter, sorting, paging etc
+	**/
 
 export class ColumnDefinition {
 	propertyName: string;
@@ -138,9 +139,10 @@ export class DataTableComponent implements OnInit {
 	public itemAction: EventEmitter<ItemAction> = new EventEmitter();
 
 	public constructor(private sanitizer: DomSanitizer,
-					   private http: Http,
-					   private dataTableService: DataTableService,
-					   private notificationsService: NotificationsService) {
+																				private http: Http,
+																				private dataTableService: DataTableService,
+																				private notificationsService: NotificationsService,
+																				private dialogService: CommonDialogsService) {
 	}
 
 	public sanitize(html: string): SafeHtml {
@@ -206,7 +208,7 @@ export class DataTableComponent implements OnInit {
 				},
 				(error) => {
 					this.notificationsService.hideOverlay();
-					//global error
+					this.dialogService.showHttpServerError(error);
 				}
 			)
 	}

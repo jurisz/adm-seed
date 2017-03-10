@@ -1,4 +1,6 @@
 import {Component, ViewChild, ViewContainerRef} from "@angular/core";
+import {Response} from "@angular/http";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 
 declare var $: any;
 
@@ -22,12 +24,22 @@ export interface ErrorDialogData {
 					<p>{{errorDialogData?.errorMessage}}</p>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" (click)="removeDialog()">Close</button>
+					 <button type="button" class="btn btn-secondary" (click)="removeDialog()">Close</button>
+						<button type="button" class="btn btn-secondary" (click)="showFullError()" *ngIf="errorDialogData.fullErrorText && !fullErrorVisible">Details ></button>
 				</div>
+						<div class="modal-body error-details-scrollable" *ngIf="fullErrorVisible">
+						<hr>
+							<samp [innerHtml]="sanitize(errorDialogData.fullErrorText)"></samp>
+						</div>
 			</div>
 		</div>
 	</div>
-`
+`,
+	styles: [`
+	.error-details-scrollable {
+		overflow: auto;
+ }
+`]
 })
 export class ErrorDialog {
 
@@ -36,13 +48,40 @@ export class ErrorDialog {
 
 	errorDialogData: ErrorDialogData;
 
-	public showErrorDialog(errorDialogData: ErrorDialogData): void {
-		this.errorDialogData = errorDialogData;
+	fullErrorVisible = false;
+
+	public constructor(private sanitizer: DomSanitizer) {
+	}
+
+
+	public showErrorDialog(errorData: Response | any): void {
+		if (errorData instanceof Response) {
+			let httpError = <Response> errorData;
+			this.errorDialogData = {
+				errorMessage: httpError.statusText + ": " + httpError.status,
+				fullErrorText: httpError.text()
+			}
+		} else {
+			this.errorDialogData = {
+				errorMessage: errorData,
+				fullErrorText: undefined
+			}
+		}
+
 		$(this.errorDialogModal.nativeElement).modal('show');
 	}
 
 	public removeDialog(): void {
-		$(this.errorDialogModal.nativeElement).modal('hide');
-		this.errorDialogModal.nativeElement.remove();
+		let nativeElement = this.errorDialogModal.nativeElement;
+		$(nativeElement).modal('hide');
+		nativeElement.remove();
+	}
+
+	public sanitize(html: string): SafeHtml {
+		return this.sanitizer.bypassSecurityTrustHtml(html);
+	}
+
+	public showFullError() {
+		this.fullErrorVisible = true;
 	}
 }
