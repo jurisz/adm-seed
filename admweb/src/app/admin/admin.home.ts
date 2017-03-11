@@ -10,6 +10,7 @@ import {NotificationsService, CommonDialogsService} from "../service";
     <button type="button" class="btn btn-success" (click)="showNotification()">Notification</button>
     <button type="button" class="btn btn-success" (click)="showSpinner()">Overlay show</button>
     <button type="button" class="btn btn-success" (click)="showErrorDialogSample()">Show error dialog sample</button>
+    <button type="button" class="btn btn-success" (click)="showConfirmDialogSample()">Show confirm dialog sample</button>
 </div>
 `
 })
@@ -19,7 +20,7 @@ export class AdminHomePage {
 	}
 
 	showNotification(): void {
-		this.notificationService.registerNotification("Some nice notification message!");
+		this.notificationService.registerNotification('Some nice notification message!');
 	}
 
 	showSpinner(): void {
@@ -28,6 +29,15 @@ export class AdminHomePage {
 	}
 
 	showErrorDialogSample(): void {
-		this.commonDialogService.showHttpServerError("Server error happened!");
+		this.commonDialogService.showHttpServerError('Server error happened!');
+	}
+
+	showConfirmDialogSample(): void {
+		let confirmDialogData = {title: 'Delete', message: 'Are you sure want to delete', callBack: this.doConfirmDialogDelete}
+		this.commonDialogService.showConfirmDialog(confirmDialogData);
+	}
+
+	private doConfirmDialogDelete() {
+		console.log("Record deleted");
 	}
 }

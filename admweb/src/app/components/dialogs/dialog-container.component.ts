@@ -1,16 +1,15 @@
 import {Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver} from "@angular/core";
 import {ErrorDialog} from "./error.dialog";
-import {CommonDialogsService} from "../../service/dialogs.service";
+import {CommonDialogsService, ConfirmDialogData} from "../../service/dialogs.service";
 import {Response} from "@angular/http";
+import {ConfirmDialog} from "./confirm.dialog";
 
 @Component({
 	selector: 'dialog-container',
-	entryComponents: [ErrorDialog],
+	entryComponents: [ErrorDialog, ConfirmDialog],
 	template: `<div #dialogContainer></div>`
 })
 export class DialogContainer implements OnInit {
-
-	private currentDialog = null;
 
 	@ViewChild('dialogContainer', {read: ViewContainerRef})
 	dialogContainer: ViewContainerRef;
@@ -20,19 +19,19 @@ export class DialogContainer implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.dialogService.errorDialogSender$.subscribe(errorData => this.showErrorDialog(errorData))
+		this.dialogService.errorDialogSender$.subscribe(errorData => this.showErrorDialog(errorData));
+		this.dialogService.confirmDialogSender$.subscribe(data => this.showConfirmDialog(data));
 	}
 
-	public showErrorDialog(errorData: Response | any): void {
-
-		if (this.currentDialog) {
-			this.currentDialog.destroy();
-		}
-
+	private showErrorDialog(errorData: Response | any): void {
 		let factory = this.componentFactoryResolver.resolveComponentFactory(ErrorDialog);
 		let dialog = this.dialogContainer.createComponent(factory);
-
-		this.currentDialog = dialog;
 		dialog.instance.showErrorDialog(errorData);
+	}
+
+	private showConfirmDialog(confirmDialogData: ConfirmDialogData): void {
+		let factory = this.componentFactoryResolver.resolveComponentFactory(ConfirmDialog);
+		let dialog = this.dialogContainer.createComponent(factory);
+		dialog.instance.showDialog(confirmDialogData);
 	}
 }
