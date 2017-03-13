@@ -14,6 +14,8 @@ export class DialogContainer implements OnInit {
 	@ViewChild('dialogContainer', {read: ViewContainerRef})
 	dialogContainer: ViewContainerRef;
 
+	private currentDialog = null;
+
 	constructor(private dialogService: CommonDialogsService,
 													private componentFactoryResolver: ComponentFactoryResolver) {
 	}
@@ -27,11 +29,20 @@ export class DialogContainer implements OnInit {
 		let factory = this.componentFactoryResolver.resolveComponentFactory(ErrorDialog);
 		let dialog = this.dialogContainer.createComponent(factory);
 		dialog.instance.showErrorDialog(errorData);
+		this.removeAndStoreCurrentDialogReference(dialog);
 	}
 
 	private showConfirmDialog(confirmDialogData: ConfirmDialogData): void {
 		let factory = this.componentFactoryResolver.resolveComponentFactory(ConfirmDialog);
 		let dialog = this.dialogContainer.createComponent(factory);
 		dialog.instance.showDialog(confirmDialogData);
+		this.removeAndStoreCurrentDialogReference(dialog);
+	}
+
+	private removeAndStoreCurrentDialogReference(dialog: any) {
+		if (this.currentDialog) {
+			this.currentDialog.destroy();
+		}
+		this.currentDialog = dialog;
 	}
 }
