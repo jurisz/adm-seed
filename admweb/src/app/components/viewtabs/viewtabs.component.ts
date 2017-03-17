@@ -14,8 +14,14 @@ interface ViewTabData {
 	selector: 'openviews',
 	template: `
 <ul class="nav nav-tabs openview-nav">
+		<li class="nav-item" *ngIf="openViewTabs.length>0">
+			<a class="nav-link no-border"><button class="close close-all" type="button" title="Close all tabs" (click)="closeAllViews()">×</button></a>
+	</li>
   <li class="nav-item" *ngFor="let view of openViewTabs">
-  	<a class="nav-link" [ngClass]="{'active': view.active}" [href]="view.url">{{view.title}}</a> 
+  	<a class="nav-link" [ngClass]="{'active': view.active}" [href]="view.url">
+  		<button class="close closeTab" type="button" (click)="closeView(view)">×</button>
+  	{{view.title}}
+  	</a> 
   </li>	
 </ul>
     `,
@@ -23,8 +29,20 @@ interface ViewTabData {
 .openview-nav {
 	margin-top: 45px;
 }
-	
-    `]
+.closeTab {
+ margin: 0 0 0 10px;
+ font-size: 1rem;
+}
+.closeTab:focus, .close-all:focus, .close-all:hover{
+	outline: none;
+}
+.nav-link {
+ padding: .5em .5em .5em 1em;
+}
+.no-border:hover {
+	border-color: transparent;
+}   
+`]
 })
 export class OpenViewTabsComponent implements OnInit {
 
@@ -50,7 +68,6 @@ export class OpenViewTabsComponent implements OnInit {
 			let viewTitle = this.extractViewTitle();
 			if (viewTitle) {
 				this.addOrActivateTitle(viewTitle);
-				console.log('view: ' + viewTitle + ' url: ' + this.activeRoute.snapshot.url.join(''));
 				this.removeLastExtraTab();
 			}
 		}
@@ -102,8 +119,32 @@ export class OpenViewTabsComponent implements OnInit {
 				}
 			}
 			if (tabToRemove) {
-				this.openViewTabs.slice(tabToRemoveIndex, 1);
+				this.openViewTabs.splice(tabToRemoveIndex, 1);
 			}
 		}
+	}
+
+	closeView(viewToClose: ViewTabData): boolean {
+		let tabToRemoveIndex = this.openViewTabs.indexOf(viewToClose);
+		if (tabToRemoveIndex > -1) {
+			this.openViewTabs.splice(tabToRemoveIndex, 1);
+			this.activateLastTab();
+		}
+		return false;
+	}
+
+	private activateLastTab() {
+		if (this.openViewTabs.length > 0) {
+			let maxActivationId = Math.max.apply(null, this.openViewTabs.map(view => view.activationId));
+			let lastActiveTab = this.openViewTabs.find(view => view.activationId === maxActivationId);
+			this.router.navigateByUrl(lastActiveTab.url.substr(1));
+		} else {
+			this.router.navigateByUrl('/admin');
+		}
+	}
+
+	closeAllViews(): void {
+		this.openViewTabs = [];
+		this.router.navigateByUrl('/admin');
 	}
 }
