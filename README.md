@@ -1,5 +1,5 @@
 
-#Backoffice style web admin seed template project.
+#Backoffice style web admin seed template project with SpringBoot, Angular2 and Bootstrap
 
 Based on **Angular2, Bootstrap4, SpringBoot with Rest Api**.  
 Web application is based on  [Angular2-webpack-starter](https://github.com/AngularClass/angular2-webpack-starter) 
