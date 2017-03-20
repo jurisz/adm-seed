@@ -1,8 +1,12 @@
 package org.juz.seed.base.entity;
 
 
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
+import org.hibernate.jpa.HibernateQuery;
 import org.juz.common.persistence.model.BaseEntity;
 import org.juz.seed.api.enity.EntityPageQuery;
+import org.juz.seed.api.enity.EntityQuery;
 import org.juz.seed.api.enity.PageResult;
 import org.juz.seed.api.enity.SortOption;
 import org.springframework.stereotype.Repository;
@@ -53,6 +57,24 @@ class EntityPageQueryRepositoryBean implements EntityPageQueryRepository {
 		query.setMaxResults(pageQuery.getPageSize());
 
 		return (List<E>) query.getResultList();
+	}
+
+	@Override
+	public <E extends BaseEntity> ScrollableEntityQueryResult scroll(Class<E> clazz, EntityQuery query) {
+		ScrollableEntityQueryResult result = new ScrollableEntityQueryResult();
+		EntityType<E> jpaEntityType = entityManager.getMetamodel().entity(clazz);
+		EntityQueryBuilder queryBuilder = new EntityQueryBuilder(clazz, jpaEntityType, query.getFilters());
+		result.setTotalRecords(queryForTotalRecords(queryBuilder));
+		result.setResults(scrollForQuery(queryBuilder, query));
+		return result;
+	}
+
+	private ScrollableResults scrollForQuery(EntityQueryBuilder queryBuilder, EntityQuery entityQuery) {
+		String jpaQuery = queryBuilder.getQuery() + addSorting(entityQuery.getSortOption());
+		Query query = entityManager.createQuery(jpaQuery);
+		setQueryParameters(query, queryBuilder);
+		org.hibernate.Query hibernateQuery = ((HibernateQuery) query).getHibernateQuery();
+		return hibernateQuery.scroll(ScrollMode.FORWARD_ONLY);
 	}
 
 	private String addSorting(SortOption sortOption) {
