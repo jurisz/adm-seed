@@ -50,7 +50,7 @@ public class UserController {
 	@PreAuthorize("hasAnyRole('" + ADMIN + "')")
 	@RequestMapping(value = "/start-excel-export", method = RequestMethod.POST)
 	@Transactional
-	public ExcelExportStatusResponse get(@RequestBody EntityQuery query) {
+	public ExcelExportStatusResponse startExcelExport(@RequestBody EntityQuery query) {
 		return excelExportService.initiateExport(User.class, query, User::toBean);
 	}
 }
