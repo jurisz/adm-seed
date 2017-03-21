@@ -257,9 +257,7 @@ export class DataTableComponent implements OnInit {
 				},
 				(error) => {
 					this.notificationsService.hideOverlay();
-					if (error.status >= 500) {
-						this.dialogService.showHttpServerError(error);
-					}
+					this.dialogService.showHttpServerError(error);
 				}
 			)
 	}
