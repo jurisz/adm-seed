@@ -4,12 +4,15 @@ import {Http} from "@angular/http";
 import {NotificationsService} from "../../service";
 import {DataTableService} from "./data-table-service";
 import {CommonDialogsService} from "../../service/dialogs.service";
+import {Observable, Subscription} from "rxjs";
 
 /**
-	Modified version of
-	https://github.com/valor-software/ng2-table/
-	using only server data in filter, sorting, paging etc
-	**/
+ Modified version of
+ https://github.com/valor-software/ng2-table/
+ using only server data in filter, sorting, paging etc
+ **/
+
+declare var $: any;
 
 export class ColumnDefinition {
 	propertyName: string;
@@ -72,10 +75,40 @@ export class ItemAction {
 	item: any;
 }
 
+type ExcelExportStatus = 'PROCESSING' | 'FINISHED'| 'ERROR';
+
+class ExcelExportStatusResponse {
+	id: string;
+	totalRecords: number = 1;
+	processedRecords: number = 0;
+	fileName: string;
+	status: ExcelExportStatus = 'PROCESSING';
+	errorMessage: string;
+}
+
 @Component({
 	selector: 'data-table',
 	template: `
 <ng-content select="filters-panel"></ng-content>
+<div class="modal" data-show="true" data-backdrop="false" id="exportExcelModal">
+	<div class="modal-dialog" role="document" *ngIf="excelExportStatusResponse">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Exporting to Excel</h5>
+			</div>
+			<div class="modal-body">
+				<div class="progress">
+					<div class="progress-bar" role="progressbar" [attr.aria-valuenow]="exportProgressPercents" [style.width]="exportProgressPercents + '%'" aria-valuemin="0" aria-valuemax="100">
+					{{excelExportStatusResponse.processedRecords}} / {{excelExportStatusResponse.totalRecords}}
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				 <button type="button" class="btn btn-secondary" (click)="cancelExcelExport()">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
 <table class="table dataTable" role="grid">
   <thead>
 	<tr role="row">
@@ -99,19 +132,29 @@ export class ItemAction {
 	</tr>
   </tbody>
 </table>
-<div class="d-flex">
-	<div class="p-2"> <b>{{pageResult.totalRecords}}</b> records; page: <b>{{currentPage}}</b></div>
-	<div class="data-table-pagination">
-		<pagination *ngIf="pageResult.totalRecords > entityPageQuery.pageSize"  [totalItems]="pageResult.totalRecords"  [(ngModel)]="currentPage" 
-			itemsPerPage="20" [boundaryLinks]="true" [maxSize]="5" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"></pagination>
+<div class="row">
+	<div class="col-md-6 d-flex">
+		<div class="p-2"> <b>{{pageResult.totalRecords}}</b> records; page: <b>{{currentPage}}</b></div>
+		<div class="data-table-pagination">
+			<pagination *ngIf="pageResult.totalRecords > entityPageQuery.pageSize"  [totalItems]="pageResult.totalRecords"  [(ngModel)]="currentPage" 
+				itemsPerPage="20" [boundaryLinks]="true" [maxSize]="5" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"></pagination>
+		</div>
+		<div class="p-2 form-inline" *ngIf="pageResult.totalRecords > entityPageQuery.pageSize">
+			<input type="text" style="width:50px;" class="form-control form-control-sm" [(ngModel)]="newPageNumber">
+			&nbsp;
+			<button [hidden]="newPageNumber == currentPage" (click)="goToNewPage()" class="btn btn-info btn-sm" type="button">Set page</button>
+		</div>
 	</div>
-	<div class="p-2 form-inline" *ngIf="pageResult.totalRecords > entityPageQuery.pageSize">
-		<input type="text" style="width:50px;" class="form-control form-control-sm" [(ngModel)]="newPageNumber">
-		&nbsp;
-		<button [hidden]="newPageNumber == currentPage" (click)="goToNewPage()" class="btn btn-info btn-sm" type="button">Set page</button>
-	</div>	        
+	<div class="col-md-6 exportExcelLink" *ngIf="apiUrl">
+		<a href="#" (click)="startExcelExport()">Export to Excel</a>
+	</div>
 </div>          
-  `,
+  `, styles: [` 
+ 	.exportExcelLink {
+ 		text-align: right;
+ 		padding-right: 5rem;
+ 	} 	
+ `],
 	providers: [DataTableService]
 })
 export class DataTableComponent implements OnInit {
@@ -128,6 +171,12 @@ export class DataTableComponent implements OnInit {
 	@Input()
 	public pageResult: PageResult = PageResult.empty();
 
+	public excelExportStatusResponse: ExcelExportStatusResponse;
+
+	public exportProgressPercents: number = 0;
+
+	private exportProgressPoller: Subscription;
+		
 	private entityPageQuery: EntityPageQuery;
 
 	public newPageNumber: number;
@@ -139,10 +188,10 @@ export class DataTableComponent implements OnInit {
 	public itemAction: EventEmitter<ItemAction> = new EventEmitter();
 
 	public constructor(private sanitizer: DomSanitizer,
-																				private http: Http,
-																				private dataTableService: DataTableService,
-																				private notificationsService: NotificationsService,
-																				private dialogService: CommonDialogsService) {
+					   private http: Http,
+					   private dataTableService: DataTableService,
+					   private notificationsService: NotificationsService,
+					   private dialogService: CommonDialogsService) {
 	}
 
 	public sanitize(html: string): SafeHtml {
@@ -199,7 +248,7 @@ export class DataTableComponent implements OnInit {
 
 	private loadPageData() {
 		this.notificationsService.showOverlay();
-		this.http.post(this.apiUrl, this.entityPageQuery)
+		this.http.post(this.apiUrl + '/list', this.entityPageQuery)
 			.map(res => res.json())
 			.subscribe(
 				(data) => {
@@ -208,7 +257,9 @@ export class DataTableComponent implements OnInit {
 				},
 				(error) => {
 					this.notificationsService.hideOverlay();
-					this.dialogService.showHttpServerError(error);
+					if (error.status >= 500) {
+						this.dialogService.showHttpServerError(error);
+					}
 				}
 			)
 	}
@@ -241,5 +292,77 @@ export class DataTableComponent implements OnInit {
 			this.itemAction.emit({action: column.linkAction, item: item});
 			return false;
 		}
+	}
+
+	startExcelExport(): boolean {
+		if (this.apiUrl) {
+			this.excelExportStatusResponse = new ExcelExportStatusResponse();
+			$('#exportExcelModal').modal('show');
+			let query = {...this.entityPageQuery};
+			query.page = undefined;
+			query.pageSize = undefined;
+			this.http.post(this.apiUrl + '/start-excel-export', query)
+				.map(res => res.json())
+				.subscribe(
+					(response: ExcelExportStatusResponse) => {
+						this.processExcelStatusResponse(response);
+					},
+					(error) => {
+						$('#exportExcelModal').modal('hide');
+						this.excelExportStatusResponse = undefined;
+						this.dialogService.showHttpServerError(error);
+					}
+				)
+
+		}
+		return false;
+	}
+
+	cancelExcelExport(): void {
+		this.http.post('/api/admin/excel-export/cancel/' + this.excelExportStatusResponse.id, {})
+			.subscribe();
+		$('#exportExcelModal').modal('hide');
+		this.exportProgressPoller.unsubscribe();
+		this.excelExportStatusResponse = undefined;
+	}
+
+	private processExcelStatusResponse(response: ExcelExportStatusResponse) {
+		this.excelExportStatusResponse = response;
+		this.exportProgressPercents = Math.round(100 * (response.processedRecords | 0) / (response.totalRecords | 1));
+		if (response.status == 'FINISHED') {
+			this.downloadExcelFile(response);
+		} else if (response.status == 'ERROR') {
+			$('#exportExcelModal').modal('hide');
+			this.excelExportStatusResponse = undefined;
+			this.dialogService.showHttpServerError('Export error occurred! ' + response.errorMessage);
+		} else {
+			this.waitForExcelFile(response);
+		}
+	}
+
+	private waitForExcelFile(response: ExcelExportStatusResponse): void {
+		this.exportProgressPoller = Observable.interval(1000)
+			.timeInterval()
+			.take(1)
+			.subscribe(() => {
+				this.http.get('/api/admin/excel-export/check/' + response.id)
+					.map(res => res.json())
+					.subscribe(
+						(response: ExcelExportStatusResponse) => {
+							this.processExcelStatusResponse(response);
+						},
+						(error) => {
+							$('#exportExcelModal').modal('hide');
+							this.excelExportStatusResponse = undefined;
+							this.dialogService.showHttpServerError(error);
+						}
+					)
+			})
+	}
+
+	private downloadExcelFile(response: ExcelExportStatusResponse): void {
+		$('exportExcelModal').modal('hide');
+		this.excelExportStatusResponse = undefined;
+		window.location.assign('/api/admin/excel-export/download/' + response.id)
 	}
 }

@@ -29,7 +29,7 @@ export class Users {
 
 	columns: Array<ColumnDefinition> = this.defineColumns();
 
-	apiUrl = '/api/admin/security/user/list';
+	apiUrl = '/api/admin/security/user';
 
 	doItemAction(itemAction: ItemAction) {
 		console.log("item action performed: " + itemAction.action + " item:" + itemAction.item.id);

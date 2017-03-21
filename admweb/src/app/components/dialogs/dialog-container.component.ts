@@ -17,7 +17,7 @@ export class DialogContainer implements OnInit {
 	private currentDialog = null;
 
 	constructor(private dialogService: CommonDialogsService,
-													private componentFactoryResolver: ComponentFactoryResolver) {
+				private componentFactoryResolver: ComponentFactoryResolver) {
 	}
 
 	ngOnInit(): void {

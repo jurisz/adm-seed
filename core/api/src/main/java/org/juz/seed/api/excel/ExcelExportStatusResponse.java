@@ -1,4 +1,4 @@
-package org.juz.seed.base.xls;
+package org.juz.seed.api.excel;
 
 public class ExcelExportStatusResponse {
 
@@ -9,6 +9,8 @@ public class ExcelExportStatusResponse {
 	private long processedRecords;
 
 	private ExcelExportStatus status = ExcelExportStatus.PROCESSING;
+
+	private String errorMessage;
 
 	private String fileName;
 
@@ -58,5 +60,13 @@ public class ExcelExportStatusResponse {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 }

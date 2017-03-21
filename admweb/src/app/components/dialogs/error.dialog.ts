@@ -27,10 +27,10 @@ export interface ErrorDialogData {
 					 <button type="button" class="btn btn-secondary" (click)="removeDialog()">Close</button>
 						<button type="button" class="btn btn-secondary" (click)="showFullError()" *ngIf="errorDialogData.fullErrorText && !fullErrorVisible">Details ></button>
 				</div>
-						<div class="modal-body error-details-scrollable" *ngIf="fullErrorVisible">
-						<hr>
-							<samp [innerHtml]="sanitize(errorDialogData.fullErrorText)"></samp>
-						</div>
+				<div class="modal-body error-details-scrollable" *ngIf="fullErrorVisible">
+				<hr>
+					<samp [innerHtml]="sanitize(errorDialogData.fullErrorText)"></samp>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -52,7 +52,6 @@ export class ErrorDialog {
 
 	public constructor(private sanitizer: DomSanitizer) {
 	}
-
 
 	public showErrorDialog(errorData: Response | any): void {
 		if (errorData instanceof Response) {

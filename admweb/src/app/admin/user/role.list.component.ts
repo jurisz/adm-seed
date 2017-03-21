@@ -21,10 +21,10 @@ export class Roles {
 		ColumnDefinition.define('name')
 	];
 
-	apiUrl = '/api/admin/security/user-role/list';
+	apiUrl = '/api/admin/security/user-role';
 
 	public openRow(item) {
-		console.log('openRow')
+		console.log('openRow');
 		console.log(item)
 	}
 }

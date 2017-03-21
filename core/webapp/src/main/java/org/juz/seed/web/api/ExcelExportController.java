@@ -1,8 +1,8 @@
 package org.juz.seed.web.api;
 
 import org.apache.commons.io.FileUtils;
+import org.juz.seed.api.excel.ExcelExportStatusResponse;
 import org.juz.seed.base.xls.ExcelExportService;
-import org.juz.seed.base.xls.ExcelExportStatusResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +33,12 @@ public class ExcelExportController {
 		return excelExportService.getExportStatus(id);
 	}
 
+	@PreAuthorize("hasAnyRole('" + ADMIN + "')")
+	@RequestMapping(value = "/cancel/{id}", method = RequestMethod.POST)
+	public void cancelExportProcess(@PathVariable String id) {
+		excelExportService.cancelExportProcess(id);
+	}
+	
 	@PreAuthorize("hasAnyRole('" + ADMIN + "')")
 	@RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
 	public void getExcelExportFileById(@PathVariable String id, HttpServletResponse response) {
