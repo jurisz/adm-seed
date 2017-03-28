@@ -3,11 +3,12 @@
     <h2 *ngIf="roleId">Edit role</h2>
     <h2 *ngIf="!roleId">Create new role</h2>
 
-    <form class="mt-4">
+    <div class="mt-4">
         <div class="form-group row">
             <label for="roleName" class="col-sm-1 col-form-label">Name</label>
             <div class="col-sm-5">
-                <input type="email" class="form-control" id="roleName" placeholder="Role Name">
+                <input type="text" class="form-control" id="roleName" placeholder="Role Name"
+                       [(ngModel)]="roleData.name">
             </div>
         </div>
         <div class="row">
@@ -15,8 +16,8 @@
                 <button class="btn btn-primary" (click)="save()">Save</button>
             </div>
             <div class="col-sm-1">
-                <a class="btn btn-secondary" [routerLink]=" ['../user-roles'] ">Cancel</a>
+                <a class="btn btn-secondary" (click)="cancel()">Cancel</a>
             </div>
         </div>
-    </form>
+    </div>
 </div>

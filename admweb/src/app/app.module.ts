@@ -1,9 +1,9 @@
-import {NgModule, ApplicationRef} from "@angular/core";
+import {ApplicationRef, NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {FormsModule} from "@angular/forms";
 import {HttpModule} from "@angular/http";
 import {RouterModule} from "@angular/router";
-import {removeNgStyles, createNewHosts} from "@angularclass/hmr";
+import {createNewHosts, removeNgStyles} from "@angularclass/hmr";
 import {ENV_PROVIDERS} from "./environment";
 import {ROUTES} from "./app.routes";
 import {App} from "./app.component";
@@ -11,7 +11,7 @@ import {NoContent} from "./no-content";
 import {Login} from "./login/login";
 import {AdminModule} from "./admin/admin.module";
 import {AuthGuard} from "./service/auth.gurad";
-import {UserService, AppStoredState, NotificationsService, CommonDialogsService} from "./service";
+import {AppStoredState, CommonDialogsService, NotificationsService, UserService, ViewTabsService} from "./service";
 
 // App is our top level component
 
@@ -21,7 +21,8 @@ const APP_PROVIDERS = [
 	AuthGuard,
 	UserService,
 	NotificationsService,
-	CommonDialogsService
+	CommonDialogsService,
+	ViewTabsService
 ];
 
 @NgModule({

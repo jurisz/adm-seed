@@ -1,5 +1,6 @@
 import {Component} from "@angular/core";
 import {ColumnDefinition} from "../../components/datatable/data-table";
+import {Router} from "@angular/router";
 
 @Component({
 	selector: 'roles',
@@ -19,6 +20,9 @@ import {ColumnDefinition} from "../../components/datatable/data-table";
 })
 export class Roles {
 
+	constructor(private router: Router) {
+	}
+
 	columns: Array<ColumnDefinition> = [
 		ColumnDefinition.define('id'),
 		ColumnDefinition.define('name')
@@ -27,7 +31,6 @@ export class Roles {
 	apiUrl = '/api/admin/security/user-role';
 
 	public openRow(item) {
-		console.log('openRow');
-		console.log(item)
+		this.router.navigate(['/admin/user-role', item.id]);
 	}
 }

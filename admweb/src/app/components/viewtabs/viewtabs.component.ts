@@ -1,5 +1,6 @@
 import {Component, OnInit} from "@angular/core";
-import {Router, Event, NavigationEnd, ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Event, NavigationEnd, Router} from "@angular/router";
+import {ViewTabsService} from "../../service/viewtabs.service";
 
 const MAX_OPEN_VIEWS = 12;
 
@@ -14,13 +15,13 @@ interface ViewTabData {
 	selector: 'openviews',
 	template: `
 <ul class="nav nav-tabs openview-nav">
-		<li class="nav-item" *ngIf="openViewTabs.length>0">
-			<a class="nav-link no-border"><button class="close close-all" type="button" title="Close all tabs" (click)="closeAllViews()">×</button></a>
+	<li class="nav-item" *ngIf="openViewTabs.length>0">
+		<a class="nav-link no-border"><button class="close close-all" type="button" title="Close all tabs" (click)="closeAllViews()">×</button></a>
 	</li>
   <li class="nav-item" *ngFor="let view of openViewTabs">
   	<a class="nav-link" [ngClass]="{'active': view.active}" [href]="view.url">
   		<button class="close closeTab" type="button" (click)="closeView(view)">×</button>
-  	{{view.title}}
+  		{{view.title}}
   	</a> 
   </li>	
 </ul>
@@ -49,7 +50,9 @@ export class OpenViewTabsComponent implements OnInit {
 	private viewActivateCounter = 0;
 	private openViewTabs: ViewTabData[] = [];
 
-	constructor(private router: Router, private activeRoute: ActivatedRoute) {
+	constructor(private router: Router,
+				private activeRoute: ActivatedRoute,
+				private viewTabsService: ViewTabsService) {
 	}
 
 	ngOnInit(): void {
@@ -61,6 +64,10 @@ export class OpenViewTabsComponent implements OnInit {
 				console.log("routing error: " + error);
 			}
 		);
+
+		this.viewTabsService.closeViewSender$.subscribe(
+			title => this.closeViewByTitle(title)
+		)
 	}
 
 	private processSuccessEvent(event: Event) {
@@ -133,6 +140,10 @@ export class OpenViewTabsComponent implements OnInit {
 		return false;
 	}
 
+	private closeViewByTitle(title: String) {
+		this.closeView(this.openViewTabs.find(view => view.title == title));
+	}
+
 	private activateLastTab() {
 		if (this.openViewTabs.length > 0) {
 			let maxActivationId = Math.max.apply(null, this.openViewTabs.map(view => view.activationId));
@@ -147,4 +158,6 @@ export class OpenViewTabsComponent implements OnInit {
 		this.openViewTabs = [];
 		this.router.navigateByUrl('/admin');
 	}
+
+
 }

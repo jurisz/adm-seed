@@ -13,6 +13,4 @@ export class AppStoredState {
 	public get(key: String): any {
 		return this.storedData.get(key);
 	}
-
-
 }
