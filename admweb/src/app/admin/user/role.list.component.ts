@@ -5,11 +5,14 @@ import {ColumnDefinition} from "../../components/datatable/data-table";
 	selector: 'roles',
 	template: `
 <div>
- <data-table [apiUrl]="apiUrl" [columns]="columns" (openRow)="openRow($event)">
+	<div class="float-right">
+		<a class="btn btn-primary btn-sm" [routerLink]=" ['../user-role'] ">Create</a>
+	</div>
+ 	<data-table [apiUrl]="apiUrl" [columns]="columns" (openRow)="openRow($event)">
 		<filters-panel>
 			<filter title="id" property="id" type="LONG"></filter>
 			<filter title="name" property="name" type="STRING"></filter>
-		</filters-panel>     
+		</filters-panel>
 	</data-table>
 </div>
   `
