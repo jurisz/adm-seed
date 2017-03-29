@@ -52,7 +52,7 @@ public class UserRoleController {
 
 	@PreAuthorize("hasAnyRole('" + ADMIN + "')")
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public Long save(RoleCrudCommand command) {
+	public Long save(@RequestBody RoleCrudCommand command) {
 		return commandService.execute(command);
 	}
 }

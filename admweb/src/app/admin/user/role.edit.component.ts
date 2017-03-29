@@ -25,7 +25,8 @@ export class Role implements OnInit, OnDestroy {
 				private http: Http,
 				private notificationsService: NotificationsService,
 				private dialogService: CommonDialogsService,
-				private viewTabsService: ViewTabsService) {
+				private viewTabsService: ViewTabsService,
+				private commonDialogService: CommonDialogsService) {
 	}
 
 	ngOnInit() {
@@ -61,7 +62,64 @@ export class Role implements OnInit, OnDestroy {
 	}
 
 	cancel(): void {
+		this.closeThisView();
+	}
+
+	private closeThisView() {
 		let viewTitle = this.roleId ? 'User role: ' + this.roleId : 'New role';
 		this.viewTabsService.closeViewByTitle(viewTitle);
+	}
+
+	save(): void {
+		let roleCrudCommand = {
+			operation: this.roleId ? 'UPDATE' : 'CREATE',
+			id: this.roleId,
+			name: this.roleData.name,
+			permissions: this.roleData.permissions
+		};
+		this.notificationsService.showOverlay();
+		this.http.post('/api/admin/security/user-role/save', roleCrudCommand)
+			.map(res => res.json())
+			.subscribe(
+				(data) => {
+					this.notificationsService.hideOverlay();
+					this.notificationsService.registerNotification('User role data saved');
+					this.closeThisView();
+				},
+				(error) => {
+					this.notificationsService.hideOverlay();
+					this.dialogService.showHttpServerError(error);
+				}
+			)
+	}
+
+	delete(): void {
+		let confirmDialogData = {
+			title: 'Delete Role',
+			message: 'Are you sure want to delete',
+			callBack: this.roleDelete
+		};
+		this.commonDialogService.showConfirmDialog(confirmDialogData);
+	}
+
+	private roleDelete: () => void = () => {
+		let roleCrudCommand = {
+			operation: 'DELETE',
+			id: this.roleId,
+		};
+		this.notificationsService.showOverlay();
+		this.http.post('/api/admin/security/user-role/save', roleCrudCommand)
+			.map(res => res.json())
+			.subscribe(
+				(data) => {
+					this.notificationsService.hideOverlay();
+					this.notificationsService.registerNotification('User role data deleted!');
+					this.closeThisView();
+				},
+				(error) => {
+					this.notificationsService.hideOverlay();
+					this.dialogService.showHttpServerError(error);
+				}
+			)
 	}
 }

@@ -15,9 +15,13 @@
             <div class="col-sm-1">
                 <button class="btn btn-primary" (click)="save()">Save</button>
             </div>
+            <div class="col-sm-1" *ngIf="roleId">
+                <button class="btn btn-secondary" (click)="delete()">Delete</button>
+            </div>
             <div class="col-sm-1">
                 <a class="btn btn-secondary" (click)="cancel()">Cancel</a>
             </div>
+
         </div>
     </div>
 </div>
