@@ -1,5 +1,8 @@
 <div>
-	<data-table [columns]="columns" [apiUrl]="apiUrl" (itemAction)="doItemAction($event)">
+    <div class="float-right">
+        <a class="btn btn-primary btn-sm" [routerLink]=" ['../user'] ">Create</a>
+    </div>
+    <data-table [columns]="columns" [apiUrl]="apiUrl" (itemAction)="doItemAction($event)" (openRow)="openRow($event)">
 		<filters-panel>
 			<filter title="Id" property="id" type="LONG"></filter>
 			<filter title="User name" property="username" type="STRING"></filter>

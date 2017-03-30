@@ -1,11 +1,15 @@
 import {Component} from "@angular/core";
 import {ColumnDefinition, ItemAction} from "../../components/datatable/data-table";
+import {Router} from "@angular/router";
 
 @Component({
 	selector: 'users',
 	templateUrl: './user.list.html'
 })
 export class Users {
+
+	constructor(private router: Router) {
+	}
 
 	private defineColumns() {
 		let editCol = ColumnDefinition.defineLink('Edit');
@@ -32,6 +36,16 @@ export class Users {
 	apiUrl = '/api/admin/security/user';
 
 	doItemAction(itemAction: ItemAction) {
-		console.log("item action performed: " + itemAction.action + " item:" + itemAction.item.id);
+		if (itemAction.action == 'edit') {
+			this.editUser(itemAction.item)
+		}
+	}
+
+	public openRow(item) {
+		this.editUser(item);
+	}
+
+	private editUser(item) {
+		this.router.navigate(['/admin/user', item.id]);
 	}
 }
