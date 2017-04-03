@@ -1,9 +1,8 @@
-import {Component, EventEmitter, Input, Output, OnInit} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {Http} from "@angular/http";
 import {NotificationsService} from "../../service";
 import {DataTableService} from "./data-table-service";
-import {CommonDialogsService} from "../../service/dialogs.service";
 import {Observable, Subscription} from "rxjs";
 
 /**
@@ -190,8 +189,7 @@ export class DataTableComponent implements OnInit {
 	public constructor(private sanitizer: DomSanitizer,
 					   private http: Http,
 					   private dataTableService: DataTableService,
-					   private notificationsService: NotificationsService,
-					   private dialogService: CommonDialogsService) {
+					   private notificationsService: NotificationsService) {
 	}
 
 	public sanitize(html: string): SafeHtml {
@@ -257,7 +255,7 @@ export class DataTableComponent implements OnInit {
 				},
 				(error) => {
 					this.notificationsService.hideOverlay();
-					this.dialogService.showHttpServerError(error);
+					this.notificationsService.showHttpServerError(error);
 				}
 			)
 	}
@@ -308,7 +306,7 @@ export class DataTableComponent implements OnInit {
 					(error) => {
 						$('#exportExcelModal').modal('hide');
 						this.excelExportStatusResponse = undefined;
-						this.dialogService.showHttpServerError(error);
+						this.notificationsService.showHttpServerError(error);
 					}
 				)
 
@@ -332,7 +330,7 @@ export class DataTableComponent implements OnInit {
 		} else if (response.status == 'ERROR') {
 			$('#exportExcelModal').modal('hide');
 			this.excelExportStatusResponse = undefined;
-			this.dialogService.showHttpServerError('Export error occurred! ' + response.errorMessage);
+			this.notificationsService.showHttpServerError('Export error occurred! ' + response.errorMessage);
 		} else {
 			this.waitForExcelFile(response);
 		}
@@ -352,7 +350,7 @@ export class DataTableComponent implements OnInit {
 						(error) => {
 							$('#exportExcelModal').modal('hide');
 							this.excelExportStatusResponse = undefined;
-							this.dialogService.showHttpServerError(error);
+							this.notificationsService.showHttpServerError(error);
 						}
 					)
 			})

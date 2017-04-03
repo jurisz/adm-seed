@@ -11,7 +11,7 @@ import {NoContent} from "./no-content";
 import {Login} from "./login/login";
 import {AdminModule} from "./admin/admin.module";
 import {AuthGuard} from "./service/auth.gurad";
-import {AppStoredState, CommonDialogsService, NotificationsService, UserService, ViewTabsService} from "./service";
+import {AppStoredState, NotificationsService, UserService, ViewTabsService} from "./service";
 
 // App is our top level component
 
@@ -21,7 +21,6 @@ const APP_PROVIDERS = [
 	AuthGuard,
 	UserService,
 	NotificationsService,
-	CommonDialogsService,
 	ViewTabsService
 ];
 

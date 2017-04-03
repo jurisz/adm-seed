@@ -1,6 +1,6 @@
-import {Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver} from "@angular/core";
+import {Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
 import {ErrorDialog} from "./error.dialog";
-import {CommonDialogsService, ConfirmDialogData} from "../../service/dialogs.service";
+import {ConfirmDialogData, NotificationsService} from "../../service/notification.service";
 import {Response} from "@angular/http";
 import {ConfirmDialog} from "./confirm.dialog";
 
@@ -16,13 +16,13 @@ export class DialogContainer implements OnInit {
 
 	private currentDialog = null;
 
-	constructor(private dialogService: CommonDialogsService,
+	constructor(private notificationService: NotificationsService,
 				private componentFactoryResolver: ComponentFactoryResolver) {
 	}
 
 	ngOnInit(): void {
-		this.dialogService.errorDialogSender$.subscribe(errorData => this.showErrorDialog(errorData));
-		this.dialogService.confirmDialogSender$.subscribe(data => this.showConfirmDialog(data));
+		this.notificationService.errorDialogSender$.subscribe(errorData => this.showErrorDialog(errorData));
+		this.notificationService.confirmDialogSender$.subscribe(data => this.showConfirmDialog(data));
 	}
 
 	private showErrorDialog(errorData: Response | any): void {

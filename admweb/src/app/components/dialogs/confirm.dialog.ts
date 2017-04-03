@@ -1,5 +1,5 @@
 import {Component, ViewChild, ViewContainerRef} from "@angular/core";
-import {ConfirmDialogData} from "../../service/dialogs.service";
+import {ConfirmDialogData} from "../../service/notification.service";
 
 declare var $: any;
 

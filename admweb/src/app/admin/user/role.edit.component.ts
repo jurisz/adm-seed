@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {Http} from "@angular/http";
 import {NotificationsService} from "../../service/notification.service";
-import {CommonDialogsService} from "../../service/dialogs.service";
 import {ViewTabsService} from "../../service/viewtabs.service";
 
 interface UserRoleData {
@@ -17,17 +16,16 @@ interface UserRoleData {
 })
 export class Role implements OnInit, OnDestroy {
 
-	roleId: number;
-	private routeSubscription: any;
-	roleData: UserRoleData = {id: undefined, name: undefined, permissions: undefined};
-
 	constructor(private route: ActivatedRoute,
 				private http: Http,
 				private notificationsService: NotificationsService,
-				private dialogService: CommonDialogsService,
-				private viewTabsService: ViewTabsService,
-				private commonDialogService: CommonDialogsService) {
+				private viewTabsService: ViewTabsService) {
 	}
+
+	roleId: number;
+	private routeSubscription: any;
+
+	roleData: UserRoleData = {id: undefined, name: undefined, permissions: undefined};
 
 	ngOnInit() {
 		this.routeSubscription = this.route.params.subscribe(params => {
@@ -56,7 +54,7 @@ export class Role implements OnInit, OnDestroy {
 				(error) => {
 					this.roleData = null;
 					this.notificationsService.hideOverlay();
-					this.dialogService.showHttpServerError(error);
+					this.notificationsService.showHttpServerError(error);
 				}
 			)
 	}
@@ -88,7 +86,7 @@ export class Role implements OnInit, OnDestroy {
 				},
 				(error) => {
 					this.notificationsService.hideOverlay();
-					this.dialogService.showHttpServerError(error);
+					this.notificationsService.showHttpServerError(error);
 				}
 			)
 	}
@@ -99,7 +97,7 @@ export class Role implements OnInit, OnDestroy {
 			message: 'Are you sure want to delete',
 			callBack: this.roleDelete
 		};
-		this.commonDialogService.showConfirmDialog(confirmDialogData);
+		this.notificationsService.showConfirmDialog(confirmDialogData);
 	}
 
 	private roleDelete: () => void = () => {
@@ -118,7 +116,7 @@ export class Role implements OnInit, OnDestroy {
 				},
 				(error) => {
 					this.notificationsService.hideOverlay();
-					this.dialogService.showHttpServerError(error);
+					this.notificationsService.showHttpServerError(error);
 				}
 			)
 	}

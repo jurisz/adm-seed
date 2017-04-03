@@ -1,7 +1,14 @@
 import {Injectable} from "@angular/core";
 import {Subject} from "rxjs/Rx";
+import {Response} from "@angular/http";
 
 export type GlobalErrorType = 'clearAllErrors' | 'sessionExpired' | 'connectionLost';
+
+export interface ConfirmDialogData {
+	title: string;
+	message: string;
+	callBack: Function;
+}
 
 @Injectable()
 export class NotificationsService {
@@ -14,7 +21,14 @@ export class NotificationsService {
 
 	private overlaySender = new Subject<boolean>();
 	overlaySender$ = this.overlaySender.asObservable();
-	
+
+	private errorDialogSender = new Subject<any>();
+	errorDialogSender$ = this.errorDialogSender.asObservable();
+
+	private confirmDialogSender = new Subject<ConfirmDialogData>();
+	confirmDialogSender$ = this.confirmDialogSender.asObservable();
+
+
 	public registerError(errorType: GlobalErrorType): void {
 		this.errorsSender.next(errorType);
 	}
@@ -33,5 +47,13 @@ export class NotificationsService {
 
 	public hideOverlay(): void {
 		this.overlaySender.next(false);
+	}
+
+	public showHttpServerError(error: Response | any): void {
+		this.errorDialogSender.next(error);
+	}
+
+	public showConfirmDialog(confirmDialogData: ConfirmDialogData): void {
+		this.confirmDialogSender.next(confirmDialogData);
 	}
 }

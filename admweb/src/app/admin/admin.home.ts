@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NotificationsService, CommonDialogsService} from "../service";
+import {NotificationsService} from "../service";
 
 @Component({
 	selector: 'home',
@@ -16,7 +16,7 @@ import {NotificationsService, CommonDialogsService} from "../service";
 })
 export class AdminHomePage {
 
-	constructor(private notificationService: NotificationsService, private commonDialogService: CommonDialogsService) {
+	constructor(private notificationService: NotificationsService) {
 	}
 
 	showNotification(): void {
@@ -29,12 +29,12 @@ export class AdminHomePage {
 	}
 
 	showErrorDialogSample(): void {
-		this.commonDialogService.showHttpServerError('Server error happened!');
+		this.notificationService.showHttpServerError('Server error happened!');
 	}
 
 	showConfirmDialogSample(): void {
 		let confirmDialogData = {title: 'Delete', message: 'Are you sure want to delete', callBack: this.doConfirmDialogDelete}
-		this.commonDialogService.showConfirmDialog(confirmDialogData);
+		this.notificationService.showConfirmDialog(confirmDialogData);
 	}
 
 	private doConfirmDialogDelete() {
