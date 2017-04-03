@@ -78,6 +78,7 @@ export class User implements OnInit, OnDestroy {
 			roleName: this.userData.roleName
 		};
 		this.notificationsService.showOverlay();
+		this.notificationsService.clearFormErrorMessages();
 		this.http.post('/api/admin/security/user/save', userCrudCommand)
 			.map(res => res.json())
 			.subscribe(
@@ -88,7 +89,7 @@ export class User implements OnInit, OnDestroy {
 				},
 				(error) => {
 					this.notificationsService.hideOverlay();
-					this.notificationsService.showHttpServerError(error);
+					this.notificationsService.showFormOrServerErrors(error);
 				}
 			)
 	}

@@ -21,3 +21,7 @@ table.dataTable thead tr {
 .data-table-pagination ul {
 	margin-bottom: 0;
 }
+
+.hidden {
+    display: none;
+}
