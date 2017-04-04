@@ -1,4 +1,4 @@
-import {Component, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, ElementRef, ViewChild} from "@angular/core";
 import {ConfirmDialogData} from "../../service/notification.service";
 
 declare var $: any;
@@ -29,7 +29,7 @@ declare var $: any;
 export class ConfirmDialog {
 
 	@ViewChild('confirmDialog')
-	dialogRef: ViewContainerRef;
+	dialogRef: ElementRef;
 
 	confirmDialogData: ConfirmDialogData;
 

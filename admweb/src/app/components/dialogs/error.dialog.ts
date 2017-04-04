@@ -1,4 +1,4 @@
-import {Component, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, ElementRef, ViewChild} from "@angular/core";
 import {Response} from "@angular/http";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 
@@ -44,7 +44,7 @@ export interface ErrorDialogData {
 export class ErrorDialog {
 
 	@ViewChild('errorDialog')
-	errorDialogModal: ViewContainerRef;
+	errorDialogModal: ElementRef;
 
 	errorDialogData: ErrorDialogData;
 
